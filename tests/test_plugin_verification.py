@@ -47,7 +47,9 @@ PROHIBITION_KEYWORDS = [
     "never",
     "do not",
     "no order",
-    "without",
+    "without placing order",
+    "without live order",
+    "without live execution",
 ]
 
 REQUIRED_SKILLS = [
