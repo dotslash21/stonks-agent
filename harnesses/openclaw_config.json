@@ -1,0 +1,198 @@
+{
+  "name": "indian-market-trading-plugin",
+  "version": "1.0.0",
+  "description": "Indian Market Trading & Investment Plugin for multi-broker monitoring, fundamental valuation, and risk sentinel",
+  "plugin": {
+    "id": "indian-market-trading-plugin",
+    "name": "Indian Market Trading Plugin",
+    "entrypoint": "plugin.json",
+    "rules": [
+      "rules/AGENTS.md"
+    ]
+  },
+  "agents": {
+    "portfolio_sentinel": {
+      "name": "portfolio_sentinel",
+      "displayName": "Portfolio Sentinel",
+      "role": "Early-Warning Risk Sentinel",
+      "description": "Adverse event early-warning radar for Indian equities, ETFs, and direct mutual funds across Zerodha Kite, Groww, and INDmoney.",
+      "manifest": "agents/portfolio_sentinel.md",
+      "skills": [
+        "indian-portfolio-sentinel",
+        "nse-corporate-filings",
+        "obsidian-portfolio-memory"
+      ],
+      "mcpServers": [
+        "zerodha-kite",
+        "groww",
+        "indmoney",
+        "nse-cm-market",
+        "nse-bhavcopy",
+        "indian-market-mcp",
+        "dalalos",
+        "yfinance-mcp",
+        "alpha-vantage",
+        "obsidian"
+      ],
+      "tools": [
+        "portfolio_sentinel_scan",
+        "corporate_action_check",
+        "adverse_event_diagnostics",
+        "obsidian_risk_journal"
+      ]
+    },
+    "fundamental_analyst": {
+      "name": "fundamental_analyst",
+      "displayName": "Fundamental Analyst",
+      "role": "Fundamental Valuation & Moat Analyst",
+      "description": "5-Pillar Buffett/Duan fundamental valuation, moat analyst, and XBRL forensic auditor.",
+      "manifest": "agents/fundamental_analyst.md",
+      "skills": [
+        "indian-fundamental-valuation",
+        "nse-corporate-filings",
+        "obsidian-portfolio-memory"
+      ],
+      "mcpServers": [
+        "dalalos",
+        "nse-bhavcopy",
+        "nse-cm-market",
+        "indian-market-mcp",
+        "yfinance-mcp",
+        "obsidian"
+      ],
+      "tools": [
+        "five_pillar_valuation",
+        "dcf_fair_value_model",
+        "xbrl_forensic_audit",
+        "obsidian_thesis_journal"
+      ]
+    },
+    "market_intel": {
+      "name": "market_intel",
+      "displayName": "Market Intel Orchestrator",
+      "role": "Market Data & Intelligence Orchestrator",
+      "description": "Multi-tiered market data orchestrator for official NSE feeds, specialist aggregators, and resilient fallbacks.",
+      "manifest": "agents/market_intel.md",
+      "skills": [
+        "nse-corporate-filings",
+        "mf-etf-health-check"
+      ],
+      "mcpServers": [
+        "nse-cm-market",
+        "nse-bhavcopy",
+        "indian-market-mcp",
+        "dalalos",
+        "yfinance-mcp",
+        "alpha-vantage"
+      ],
+      "tools": [
+        "multi_tier_quote_router",
+        "bhavcopy_historical_eod",
+        "amfi_scheme_analytics",
+        "corporate_announcements"
+      ]
+    },
+    "portfolio_manager": {
+      "name": "portfolio_manager",
+      "displayName": "Multi-Broker Portfolio Manager",
+      "role": "Multi-Broker Portfolio Manager",
+      "description": "Multi-broker asset consolidator and authentication orchestrator across Zerodha Kite, Groww, and INDmoney.",
+      "manifest": "agents/portfolio_manager.md",
+      "skills": [
+        "mf-etf-health-check",
+        "indian-portfolio-sentinel",
+        "obsidian-portfolio-memory"
+      ],
+      "mcpServers": [
+        "zerodha-kite",
+        "groww",
+        "indmoney",
+        "indian-market-mcp",
+        "obsidian"
+      ],
+      "tools": [
+        "multi_broker_holdings_aggregator",
+        "broker_auth_gate",
+        "mf_overlap_detector",
+        "asset_allocation_analyzer"
+      ]
+    }
+  },
+  "skills": {
+    "indian-portfolio-sentinel": {
+      "path": "skills/indian-portfolio-sentinel/SKILL.md",
+      "description": "Adverse risk diagnostics, corporate action adjustments & severity scoring for Indian equities and funds"
+    },
+    "indian-fundamental-valuation": {
+      "path": "skills/indian-fundamental-valuation/SKILL.md",
+      "description": "5-Pillar Buffett/Duan valuation, DCF model, Moat checklist & DalalOS XBRL audits"
+    },
+    "nse-corporate-filings": {
+      "path": "skills/nse-corporate-filings/SKILL.md",
+      "description": "SEBI LODR Reg 30 disclosures, insider trades, pledge audits & DalalOS filings"
+    },
+    "mf-etf-health-check": {
+      "path": "skills/mf-etf-health-check/SKILL.md",
+      "description": "AMFI scheme analytics, tracking error, style box & expense ratio audits"
+    },
+    "obsidian-portfolio-memory": {
+      "path": "skills/obsidian-portfolio-memory/SKILL.md",
+      "description": "Thesis logging, holding notes & risk journal in Obsidian vault"
+    }
+  },
+  "mcpServers": {
+    "zerodha-kite": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.kite.trade/mcp"],
+      "description": "Zerodha Kite broker MCP for user holdings, positions, margins"
+    },
+    "groww": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote@0.1.18", "https://mcp.groww.in/mcp", "52155"],
+      "description": "Groww broker MCP for direct equities and mutual fund holdings"
+    },
+    "indmoney": {
+      "url": "https://mcp.indmoney.com/mcp",
+      "transport": "sse",
+      "description": "INDmoney broker MCP for Indian equities, US stocks, and CAMS/KFintech MFs"
+    },
+    "nse-cm-market": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.nseindia.in/cmmkt/mcp"],
+      "description": "Primary: Official NSE Capital Market live snapshot, quotes, and market breadth"
+    },
+    "nse-bhavcopy": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "https://mcp.nseindia.in/bhavcopy/cm/mcp"],
+      "description": "Primary: Official NSE Bhavcopy 5-year historical EOD prices and delivery volumes"
+    },
+    "indian-market-mcp": {
+      "command": "uvx",
+      "args": ["indian-market-mcp"],
+      "description": "Primary for MFs/ETFs & Secondary for Equities: 47k AMFI schemes, SIP XIRR, FII/DII flows"
+    },
+    "dalalos": {
+      "url": "https://mcp.dalalos.in/mcp",
+      "transport": "sse",
+      "description": "Forensic Specialist: BSE-XBRL filings, capex announcements, order books, BRSR disclosures"
+    },
+    "yfinance-mcp": {
+      "command": "uvx",
+      "args": ["yfmcp"],
+      "description": "Universal Fallback: Unauthenticated equity quotes (.NS/.BO), ETF fund look-through, WebP charts"
+    },
+    "alpha-vantage": {
+      "url": "https://mcp.alphavantage.co/mcp",
+      "transport": "sse",
+      "description": "Technical Specialist: 50+ pre-calculated server-side indicators (RSI, MACD, Bollinger Bands)"
+    },
+    "obsidian": {
+      "command": "npx",
+      "args": ["-y", "obsidian-mcp-server@3.7.2"],
+      "env": {
+        "OBSIDIAN_API_KEY": "ec7a0921e9ad1be4ba2f052d9f4cd0e23e83a4442386c0957d4857a3dddbe57a"
+      },
+      "description": "Persistent Investment Memory: Obsidian vault note and thesis management"
+    }
+  }
+}
