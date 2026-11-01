@@ -1,0 +1,42 @@
+{
+  "mcpServers": {
+    "indian-market-mcp": {
+      "command": "uvx",
+      "args": ["indian-market-mcp"],
+      "description": "Comprehensive Indian stock market server (NSE, BSE, Mutual Funds, ETFs, Corporate Actions, Technicals, FII/DII data). 68+ tools, zero API keys required."
+    },
+    "zerodha-kite": {
+      "command": "uvx",
+      "args": ["kite-mcp-server"],
+      "env": {
+        "KITE_API_KEY": "${KITE_API_KEY}",
+        "KITE_ACCESS_TOKEN": "${KITE_ACCESS_TOKEN}",
+        "KITE_USER_ID": "${KITE_USER_ID}"
+      },
+      "description": "Zerodha Kite Connect MCP server for reading holdings, positions, margins, quotes, and setting GTT protective stop-loss orders."
+    },
+    "groww-portfolio": {
+      "command": "node",
+      "args": ["./connectors/groww-mcp/index.js"],
+      "env": {
+        "GROWW_SESSION_TOKEN": "${GROWW_SESSION_TOKEN}",
+        "GROWW_USER_ID": "${GROWW_USER_ID}"
+      },
+      "description": "Groww Mutual Funds and Direct Equity portfolio tracking MCP server."
+    },
+    "indmoney-portfolio": {
+      "command": "node",
+      "args": ["./connectors/indmoney-mcp/index.js"],
+      "env": {
+        "INDMONEY_AUTH_TOKEN": "${INDMONEY_AUTH_TOKEN}",
+        "INDMONEY_DEVICE_ID": "${INDMONEY_DEVICE_ID}"
+      },
+      "description": "INDmoney aggregated net worth, Indian direct equity, US stocks, and external CAS-tracked mutual funds."
+    },
+    "nse-filings-scanner": {
+      "command": "uvx",
+      "args": ["nse-mcp"],
+      "description": "NSE corporate filings, board meeting notices, financial results, bulk deals, and corporate action disclosures."
+    }
+  }
+}
