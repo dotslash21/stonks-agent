@@ -41,9 +41,14 @@ Investing/
 - **Template**: `templates/obsidian/risk-alert-journal-template.md`.
 
 ## Standard Obsidian MCP Interaction Patterns
-Agents interact with the user's Obsidian vault exclusively through the tools exposed by `obsidian-mcp-server`:
+Agents interact with the user's Obsidian vault exclusively through the exact tool identifiers provided by `obsidian-mcp-server`:
+- `obsidian_get_note`: Reads markdown content and parsed frontmatter attributes for a specific note.
+- `obsidian_write_note`: Creates a new note or replaces note content using structured markdown templates.
+- `obsidian_search_notes`: Queries notes across the vault by symbol, title, or keyword search.
+- `obsidian_append_to_note`: Appends new sections, quarterly audit entries, or follow-up notes without overwriting existing content.
+- `obsidian_patch_note`: Surgically replaces or patches targeted blocks, frontmatter fields, or alert statuses.
 
-### 1. Searching Notes (`search_notes`)
+### 1. Searching Notes (`obsidian_search_notes`)
 Before initiating deep valuation analysis, rebalancing recommendations, or responding to market volatility, the agent must check if an existing note exists:
 - Query by ticker symbol or scheme keyword:
   ```json
@@ -54,7 +59,7 @@ Before initiating deep valuation analysis, rebalancing recommendations, or respo
 - Evaluates search results to locate relevant theses in `Investing/Theses/`, fund reviews in `Investing/Funds/`, or prior risk records in `Investing/Alerts/`.
 - Prevents redundant note creation and ensures historical context is incorporated.
 
-### 2. Reading Notes (`get_notes`)
+### 2. Reading Notes (`obsidian_get_note`)
 When a holding is identified for review or monitoring:
 - Read note content by path or query:
   ```json
@@ -65,7 +70,7 @@ When a holding is identified for review or monitoring:
 - Extracts frontmatter attributes (`avg_buy_price`, `moat_type`, `target_exit_price`, `stop_loss_level`) and invalidation criteria.
 - Feeds historical purchase assumptions into current price evaluations to detect thesis violations.
 
-### 3. Creating Notes (`create_note`)
+### 3. Creating & Writing Notes (`obsidian_write_note`)
 When a new stock position is entered, a mutual fund added, or an adverse incident flagged:
 - Creates a new markdown document using the canonical templates in `templates/obsidian/`:
   ```json
@@ -76,16 +81,27 @@ When a new stock position is entered, a mutual fund added, or an adverse inciden
   ```
 - Ensures all mandatory YAML frontmatter properties and structured markdown headings are strictly populated.
 
-### 4. Updating Notes (`update_note`)
-When new quarterly financial results are released, annual reports audited, or risk incidents resolved:
-- Appends or updates the note without destroying historical records:
+### 4. Appending to Notes (`obsidian_append_to_note`)
+When new quarterly financial results are released or ongoing audit logs are updated:
+- Appends historical entries to the note without destroying previous records:
   ```json
   {
     "path": "Investing/Theses/INFY-thesis.md",
-    "content": "..."
+    "content": "\n| 2026-Q3 | 1,840.00 | ₹42.50 | 18.2x | Thesis on track; cloud revenue +18% YoY | Arun |\n"
   }
   ```
 - Appends quarterly review entries to the `Quarterly Audit Log` table, preserving the immutable trail of previous analyses.
+
+### 5. Patching Notes (`obsidian_patch_note`)
+When updating specific alert statuses or frontmatter fields:
+- Surgically patches target lines or metadata blocks:
+  ```json
+  {
+    "path": "Investing/Alerts/2026-11-01-INFY-alert.md",
+    "search": "status: \"TRIGGERED\"",
+    "replace": "status: \"RESOLVED\""
+  }
+  ```
 - Updates alert status in `Investing/Alerts/` from `TRIGGERED` to `INVESTIGATING` or `RESOLVED`.
 
 ## Multi-Agent Memory Coordination Workflow
@@ -97,8 +113,8 @@ flowchart TD
     FA[Fundamental Analyst Agent] -->|Reads / Writes Thesis| SOM
     MI[Market Intel Agent] -->|Queries Past Filings| SOM
 
-    SOM -->|Read / Search| VSearch[search_notes / get_notes]
-    SOM -->|Write / Append| VWrite[create_note / update_note]
+    SOM -->|Read / Search| VSearch["obsidian_search_notes / obsidian_get_note"]
+    SOM -->|Write / Append / Patch| VWrite["obsidian_write_note / obsidian_append_to_note / obsidian_patch_note"]
 
     VSearch --> Vault[(Obsidian Vault: Investing/)]
     VWrite --> Vault

@@ -17,7 +17,7 @@ To ensure reliable operation during market hours and off-market scans, data quer
 | **Technical Indicators (EMA, RSI)** | `indian-market-mcp:get_technical_indicators` | Calculated from `nse-bhavcopy` history | Calculated from `yfinance-mcp:yfinance_get_historical_data` |
 | **Corporate Disclosures (LODR Reg 30)** | NSE Live CM (`nse-cm-market:get_announcements`) | `dalalos:get_regulatory_filings` | `indian-market-mcp:get_corporate_announcements` |
 | **Corporate Actions (Split, Bonus, Div)** | `indian-market-mcp:get_corporate_actions` | `dalalos:get_corporate_actions` | `yfinance-mcp:yfinance_get_historical_data` (actions lookback) |
-| **Financial Media & News Flow** | `news-sentiment-connector` (Moneycontrol, ET, Livemint) | `indian-market-mcp:get_news` | `yfinance-mcp:yfinance_get_news` |
+| **Financial Media & News Flow** | `indian-market-mcp:get_news` | `yfinance-mcp:yfinance_get_news` | — |
 
 ## Corporate Action Adjustment Rule
 > [!IMPORTANT]

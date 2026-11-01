@@ -49,7 +49,7 @@
       "command": "npx",
       "args": ["-y", "obsidian-mcp-server@3.7.2"],
       "env": {
-        "OBSIDIAN_API_KEY": "ec7a0921e9ad1be4ba2f052d9f4cd0e23e83a4442386c0957d4857a3dddbe57a"
+        "OBSIDIAN_API_KEY": "${OBSIDIAN_API_KEY}"
       },
       "description": "Persistent Investment Memory: Obsidian vault note and thesis management"
     }

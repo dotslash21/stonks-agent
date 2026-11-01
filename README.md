@@ -83,7 +83,7 @@ flowchart TD
 | **Zerodha Kite** | Cash Equities, Gold & Index ETFs, SGBs | Read-only MCP (`mcp-remote`) | Kite Connect API Key + Session TOTP (Daily 06:00 IST expiry) |
 | **Groww** | Direct Mutual Funds (AMFI), Cash Equities | Read-only MCP (`growwmcp`) | Mobile Bearer Token / Session Cookie |
 | **INDmoney** | Indian Equities, US Stocks, CAMS/KFintech e-CAS MFs | Read-only MCP (SSE endpoint) | Web Session JWT / Secure Device ID |
-| **Obsidian** | Local Markdown Vault (Theses, Reviews, Risk Logs) | Local REST API MCP (`obsidian-mcp-server`) | Local REST API Key (`OBSIDIAN_API_KEY`) |
+| **Obsidian** | Local Markdown Vault (Theses, Funds, Alerts) | Local REST API MCP (`obsidian-mcp-server`) | Local REST API Key (`OBSIDIAN_API_KEY`) |
 
 ### Strict Asset Scope & Horizon Rules:
 - **PERMITTED**: NSE/BSE Cash Market Delivery Equities, Listed ETFs (Nifty 50, Bank Nifty, Gold, International), AMFI Direct Mutual Funds (Growth Plans), and US Equities held via INDmoney.
@@ -251,9 +251,9 @@ All agents operate under non-negotiable quantitative and behavioral guardrails c
    }
    ```
 5. Ensure your vault contains the following folders to match the template workflows:
-   - `Theses/`
-   - `Reviews/`
-   - `Risk-Alerts/`
+   - `Investing/Theses/` (e.g. `Investing/Theses/HDFCBANK-thesis.md`)
+   - `Investing/Funds/` (e.g. `Investing/Funds/2026-H1-MF-Health-Check.md`)
+   - `Investing/Alerts/` (e.g. `Investing/Alerts/YYYY-MM-DD-SYMBOL-alert.md`)
 
 ---
 
@@ -310,7 +310,7 @@ Run a comprehensive pre-market risk audit across my Zerodha Kite and Groww portf
 2. Ingests holdings and passes them to `portfolio_sentinel`.
 3. `market_intel` queries official NSE filings and Bhavcopy prices.
 4. If any holding dropped >10%, `corporate_action_check` verifies ex-dates for bonuses or splits.
-5. Critical governance flags are outputted as structured Markdown Advisory Cards and logged to Obsidian via `obsidian-portfolio-memory`.
+5. Critical governance flags are outputted as structured Markdown Advisory Cards and logged to Obsidian under `Investing/Alerts/` (e.g. `Investing/Alerts/YYYY-MM-DD-SYMBOL-alert.md`) via `obsidian-portfolio-memory`.
 
 ---
 
@@ -325,7 +325,7 @@ Perform an in-depth 5-pillar fundamental valuation and moat analysis on HDFCBANK
 1. `fundamental_analyst` retrieves XBRL filings via `dalalos` and historical delivery data via `nse-bhavcopy`.
 2. Evaluates the 5 pillars: Moat durability, Free Cash Flow yield, 2-stage DCF, PEG ratio, and Margin of Safety.
 3. Calculates intrinsic value factoring in terminal growth rates (5–6% for India).
-4. Populates [`templates/obsidian/stock-thesis-template.md`](templates/obsidian/stock-thesis-template.md) and writes it into `Theses/HDFCBANK.md` in Obsidian.
+4. Populates [`templates/obsidian/stock-thesis-template.md`](templates/obsidian/stock-thesis-template.md) and writes it into `Investing/Theses/HDFCBANK-thesis.md` in Obsidian.
 
 ---
 
@@ -340,7 +340,7 @@ Audit my mutual fund holdings on Groww and INDmoney (Parag Parikh Flexi Cap Fund
 1. `portfolio_manager` aggregates MF folios from Groww and INDmoney.
 2. Invokes `mf-etf-health-check` skill using `indian-market-mcp` (AMFI data).
 3. Compares top 10 portfolio constituents against NIFTYBEES for duplicate exposure.
-4. Writes audit note to `Reviews/2026-H1-MF-Health-Check.md` using [`templates/obsidian/mf-etf-review-template.md`](templates/obsidian/mf-etf-review-template.md).
+4. Writes audit note to `Investing/Funds/2026-H1-MF-Health-Check.md` using [`templates/obsidian/mf-etf-review-template.md`](templates/obsidian/mf-etf-review-template.md).
 
 ---
 
