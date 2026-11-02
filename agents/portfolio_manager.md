@@ -52,7 +52,7 @@ You are the **Multi-Broker Portfolio Manager**, the central asset consolidator a
 - `zerodha-kite`: `get_holdings`, `get_positions`, `get_profile`.
 - `groww`: `get_holdings`, `get_mf_holdings`.
 - `indmoney`: `get_holdings`, `get_us_holdings`, `get_mf_holdings`.
-- `obsidian`: `create_note`, `update_note` for portfolio summaries.
+- `obsidian`: `obsidian_write_note`, `obsidian_get_note`, `obsidian_append_to_note` for portfolio summaries.
 
 ---
 

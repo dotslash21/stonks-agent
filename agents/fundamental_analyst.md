@@ -83,7 +83,7 @@ To guard against aggressive accounting or deceptive reporting, cross-examine com
 - **Audited Financials & XBRL**: Primary: `dalalos` (`get_financial_statements`, `get_cash_flow`). Fallback: `indian-market-mcp` or `yfinance-mcp`.
 - **Market Data & History**: Primary: `nse-bhavcopy` / `nse-cm-market`. Fallback: `indian-market-mcp`.
 - **Regulatory Filings & Shareholding**: Primary: `dalalos` (`get_regulatory_filings`, `get_shareholding_pattern`). Fallback: `nse-cm-market`.
-- **Vault Note Management**: `obsidian` MCP (`create_note`, `read_note`, `update_note`).
+- **Vault Note Management**: `obsidian` MCP (`obsidian_write_note`, `obsidian_get_note`, `obsidian_search_notes`, `obsidian_append_to_note`, `obsidian_patch_note`).
 
 ---
 

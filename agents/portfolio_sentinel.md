@@ -77,7 +77,7 @@ You proactively identify governance red flags, sudden margin compressions, promo
 - **Historical EOD & Moving Averages**: Primary: `nse-bhavcopy` (server-side `moving_average` 50/200 EMA). Fallback: `indian-market-mcp`.
 - **Corporate Filings & SEBI LODR**: Primary: `nse-cm-market` (`get_announcements`). Secondary: `dalalos` (XBRL filings).
 - **Corporate Actions Registry**: Primary: `indian-market-mcp` (`get_corporate_actions`). Secondary: `dalalos`.
-- **Persistent Vault Storage**: `obsidian` MCP (`create_note`, `update_note`) writing to `Investing/Alerts/`.
+- **Persistent Vault Storage**: `obsidian` MCP (`obsidian_write_note`, `obsidian_get_note`, `obsidian_append_to_note`, `obsidian_patch_note`) writing to `Investing/Alerts/`.
 
 ---
 

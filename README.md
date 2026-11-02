@@ -2,11 +2,12 @@
 
 [![Plugin Version](https://img.shields.io/badge/Plugin_Version-1.0.0-blue.svg)](plugin.json)
 [![Antigravity](https://img.shields.io/badge/Antigravity-2.0_Ready-green.svg)](https://antigravity.google)
+[![Claude Code](https://img.shields.io/badge/Claude_Code-Auto--Detect-purple.svg)](.mcp.json)
+[![OpenAI Codex](https://img.shields.io/badge/Codex_/_Cursor-AGENTS.md-black.svg)](AGENTS.md)
 [![Hermes Agent](https://img.shields.io/badge/Hermes_Agent-Plugin_Ready-cyan.svg)](plugin.yaml)
-[![Claude Desktop](https://img.shields.io/badge/Claude_Desktop-Compatible-purple.svg)](harnesses/claude_desktop_config.json)
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-Compatible-orange.svg)](harnesses/openclaw_config.json)
-[![Advisory Only](https://img.shields.io/badge/Safety-100%25_Advisory_Only-red.svg)](rules/AGENTS.md)
-[![Verification Suite](https://img.shields.io/badge/Tests-10%2F10_Passing-brightgreen.svg)](tests/test_plugin_verification.py)
+[![Advisory Only](https://img.shields.io/badge/Safety-100%25_Advisory_Only-red.svg)](AGENTS.md)
+[![Verification Suite](https://img.shields.io/badge/Tests-15%2F15_Passing-brightgreen.svg)](tests/)
 
 An institutional-grade, multi-agent intelligence plugin designed specifically for **Indian capital market investors (NSE/BSE Equities, Exchange-Traded Funds, and AMFI Direct Mutual Funds)**. Built for long-term compounders, high-conviction value investors, and positional risk managers (**strictly NO F&O derivatives, NO intraday day trading**), this plugin delivers 24/7 proactive monitoring for negative market events, corporate governance anomalies, SEBI LODR disclosures, and valuation shifts across **Zerodha Kite, Groww, and INDmoney**.
 
@@ -23,8 +24,10 @@ Synthesizes architecture patterns from:
 flowchart TD
     subgraph MultiHarnessClients ["1. Client Execution Harnesses"]
         AGY["Antigravity IDE & CLI<br/>(Native Plugin Manifest)"]
+        CLAUDE_CODE["Claude Code<br/>(Auto .mcp.json & CLAUDE.md)"]
+        CODEX["OpenAI Codex / Cursor<br/>(Root AGENTS.md Standard)"]
         HERMES["Hermes Agent<br/>(plugin.yaml & __init__.py)"]
-        CLAUDE["Claude Desktop<br/>(MCP Stdio / SSE Config)"]
+        CLAUDE_DESK["Claude Desktop<br/>(MCP Stdio / SSE Config)"]
         OPENCLAW["OpenClaw Runtime<br/>(Autonomous Agent Topology)"]
     end
 
@@ -55,8 +58,10 @@ flowchart TD
     end
 
     AGY --> AgentPersonas
+    CLAUDE_CODE --> AgentPersonas
+    CODEX --> AgentPersonas
     HERMES --> AgentPersonas
-    CLAUDE --> AgentPersonas
+    CLAUDE_DESK --> AgentPersonas
     OPENCLAW --> AgentPersonas
 
     AgentPersonas --> MANAGER
@@ -170,8 +175,8 @@ All agents operate under non-negotiable quantitative and behavioral guardrails c
 
 1. Clone or place this repository into your workspace:
    ```bash
-   git clone https://github.com/your-username/agentic-trading-setup.git
-   cd agentic-trading-setup
+   git clone https://github.com/dotslash21/stonks-agent.git
+   cd stonks-agent
    ```
 2. Antigravity discovers plugins automatically via [`plugin.json`](plugin.json). To register the plugin in your global or local config, run:
    ```bash
@@ -181,86 +186,61 @@ All agents operate under non-negotiable quantitative and behavioral guardrails c
 
 ---
 
-### Option 2: In Claude Desktop
+### Option 2: In Claude Code (Turnkey)
+
+This repository is pre-configured for **Claude Code** out-of-the-box:
+1. Clone and enter the repository:
+   ```bash
+   git clone https://github.com/dotslash21/stonks-agent.git
+   cd stonks-agent
+   ```
+2. **Auto-Discovery**: Claude Code automatically loads all 10 MCP servers via root [`.mcp.json`](.mcp.json) and reads project rules, advisory constraints, and test commands from root [`CLAUDE.md`](CLAUDE.md).
+3. Export your broker and API keys in your shell:
+   ```bash
+   export ZERODHA_ACCESS_TOKEN="your_daily_token"
+   export GROWW_AUTH_TOKEN="your_groww_token"
+   export INDMONEY_API_TOKEN="your_indmoney_token"
+   export ALPHA_VANTAGE_API_KEY="your_alpha_key"
+   export OBSIDIAN_API_KEY="your_obsidian_key"
+   export OBSIDIAN_VAULT_PATH="/path/to/vault"
+   ```
+4. Start Claude Code:
+   ```bash
+   claude
+   ```
+
+---
+
+### Option 3: In OpenAI Codex & Cursor
+
+OpenAI Codex, Cursor, and OpenAI CLI harnesses search for the agent instruction standard at the project root:
+1. Root [`AGENTS.md`](AGENTS.md) is automatically ingested by Codex / Cursor agents as workspace instructions.
+2. The rules establish mandatory broker authentication gating, zero live trade execution, corporate action price adjustments, and multi-tier data routing fallbacks.
+3. Configure your MCP bridge or proxy using the canonical definitions in [`mcp_config.json`](mcp_config.json).
+
+---
+
+### Option 4: In Claude Desktop
 
 1. Copy the pre-configured MCP definitions from [`harnesses/claude_desktop_config.json`](harnesses/claude_desktop_config.json) into your Claude Desktop configuration file:
    - **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
    - **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
    - **Linux**: `~/.config/Claude/claude_desktop_config.json`
-
-2. Sample Claude Desktop configuration excerpt:
-   ```json
-   {
-     "mcpServers": {
-       "nse-cm-market": {
-         "command": "npx",
-         "args": ["-y", "mcp-remote", "https://mcp.nseindia.in/cmmkt/mcp"]
-       },
-       "nse-bhavcopy": {
-         "command": "npx",
-         "args": ["-y", "mcp-remote", "https://mcp.nseindia.in/bhavcopy/cm/mcp"]
-       },
-       "indian-market-mcp": {
-         "command": "uvx",
-         "args": ["indian-market-mcp"]
-       },
-       "dalalos": {
-         "url": "https://mcp.dalalos.in/mcp",
-         "transport": "sse"
-       },
-       "yfinance-mcp": {
-         "command": "uvx",
-         "args": ["yfmcp"]
-       },
-       "alpha-vantage": {
-         "url": "https://mcp.alphavantage.co/mcp",
-         "transport": "sse"
-       },
-       "obsidian": {
-         "command": "npx",
-         "args": ["-y", "obsidian-mcp-server@3.7.2"],
-         "env": {
-           "OBSIDIAN_API_KEY": "YOUR_OBSIDIAN_LOCAL_REST_API_KEY"
-         }
-       }
-     }
-   }
-   ```
+2. Ensure authentication tokens (`INDMONEY_API_TOKEN`, `ALPHA_VANTAGE_API_KEY`, `OBSIDIAN_API_KEY`, `OBSIDIAN_VAULT_PATH`) are set in your environment.
 3. Restart Claude Desktop.
 
 ---
 
-### Option 3: In OpenClaw
-
-1. Point your OpenClaw agent deployment manifest to [`harnesses/openclaw_config.json`](harnesses/openclaw_config.json):
-   ```bash
-   openclaw plugin register ./harnesses/openclaw_config.json
-   ```
-2. The runtime config registers all 4 agent personas, 5 skill paths, and all 10 MCP server definitions.
-
----
-
-### Option 4: In Hermes Agent
+### Option 5: In Hermes Agent
 
 This repository functions natively as a **Hermes Agent plugin** via its root [`plugin.yaml`](plugin.yaml) and [`__init__.py`](__init__.py).
 
-#### 1. Install or Link the Plugin
-- **Install directly via Hermes CLI**:
-  ```bash
-  hermes plugins install https://github.com/arun/agentic-trading-setup
-  ```
-- **Or install locally into your user plugin folder**:
-  ```bash
-  # Linux/macOS
-  ln -s $(pwd) ~/.hermes/plugins/stonks-agent
-
-  # Windows (PowerShell)
-  New-Item -ItemType SymbolicLink -Path "$HOME\.hermes\plugins\stonks-agent" -Target (Get-Location)
-  ```
-- **Project-Level Plugin**: If running directly within this directory, enable project plugins in your shell:
-  ```bash
-  export HERMES_ENABLE_PROJECT_PLUGINS=1
-  ```
+#### 1. Authoritative Installation Path
+Install directly via the official Hermes CLI:
+```bash
+hermes plugins install https://github.com/dotslash21/stonks-agent
+```
+*(For local offline development, clone directly into your Hermes plugins directory: `git clone https://github.com/dotslash21/stonks-agent.git ~/.hermes/plugins/stonks-agent`)*
 
 #### 2. Configure MCP Servers in Hermes
 Merge the MCP definitions from [`harnesses/hermes_config.yaml`](harnesses/hermes_config.yaml) into your `~/.hermes/config.yaml` under `mcp_servers:`:
@@ -275,6 +255,8 @@ mcp_servers:
     args: ["-y", "mcp-remote@0.1.18", "https://mcp.groww.in/mcp", "52155"]
   indmoney:
     url: "https://mcp.indmoney.com/mcp"
+    headers:
+      Authorization: "Bearer ${INDMONEY_API_TOKEN}"
   nse-cm-market:
     command: "npx"
     args: ["-y", "mcp-remote", "https://mcp.nseindia.in/cmmkt/mcp"]
@@ -291,21 +273,36 @@ mcp_servers:
     args: ["yfmcp"]
   alpha-vantage:
     url: "https://mcp.alphavantage.co/mcp"
+    headers:
+      Authorization: "Bearer ${ALPHA_VANTAGE_API_KEY}"
   obsidian:
     command: "npx"
     args: ["-y", "obsidian-mcp-server@3.7.2"]
+    env:
+      OBSIDIAN_API_KEY: "${OBSIDIAN_API_KEY}"
+      OBSIDIAN_VAULT_PATH: "${OBSIDIAN_VAULT_PATH}"
 ```
 
 #### 3. Hermes Slash Commands & Guardrails
 - `/sentinel_audit [symbol]`: Triggers pre-market risk audit across broker holdings.
 - `/valuation_audit [symbol]`: Performs 5-pillar fundamental valuation and moat analysis.
 - `/mf_audit [scheme]`: Audits mutual funds and ETFs for TER creep, AUM bloat, and benchmark tracking error.
-- `/market_status`: Displays configured MCP data sources and confirms advisory-only mode.
-- **Safety Guardrail Hook**: `pre_tool_call` automatically intercepts and blocks any execution tool (`place_order`, `cancel_order`, etc.), guaranteeing 100% read-only operation.
+- `/market_status`: **Inspects live environment variables and tokens** (`ZERODHA_ACCESS_TOKEN`, `GROWW_AUTH_TOKEN`, `INDMONEY_API_TOKEN`, `OBSIDIAN_API_KEY`, `ALPHA_VANTAGE_API_KEY`) and reports connection readiness and session status.
+- **Safety Guardrail Hook**: `pre_tool_call` automatically intercepts and blocks any execution tool (`place_order`, `place_gtt`, `cancel_order`, `square_off`, `placeOrder`, etc.), guaranteeing 100% read-only operation across snake_case, camelCase, and kebab-case tool names.
 
 ---
 
-### Option 5: Configuring Obsidian Investment Memory
+### Option 6: In OpenClaw
+
+1. Point your OpenClaw agent deployment manifest to [`harnesses/openclaw_config.json`](harnesses/openclaw_config.json):
+   ```bash
+   openclaw plugin register ./harnesses/openclaw_config.json
+   ```
+2. The runtime config registers all 4 agent personas, 5 skill paths, and all 10 MCP server definitions.
+
+---
+
+### Option 7: Configuring Obsidian Investment Memory
 
 1. Open your **Obsidian** investment research vault.
 2. Install and enable the community plugin: **Local REST API** (`coddingtonbear/obsidian-local-rest-api`).
@@ -432,20 +429,25 @@ The repository includes a comprehensive, automated test suite in [`tests/test_pl
 
 Run the test suite:
 ```bash
-python tests/test_plugin_verification.py
+python -m unittest discover tests
 ```
 
-### Verification Suite Coverage (10/10 Tests Passing):
+### Verification Suite Coverage (15/15 Tests Passing):
 1. `test_plugin_manifest_validity`: Validates `plugin.json` schema, author, version, and prompt list.
 2. `test_mcp_config_validity`: Verifies presence and syntax for all 10 MCP servers in `mcp_config.json`.
-3. `test_no_execution_tools_prohibition`: Enforces 0 live order placement or cancellation tools (`place_order`, `place_gtt_order`, `cancel_order`) across all agent manifests, skills, and rule files.
+3. `test_no_execution_tools_prohibition`: Enforces 0 live order placement or cancellation tools (`place_order`, `place_gtt`, `cancel_order`, etc.) across all agent manifests, skills, and rule files.
 4. `test_corporate_action_rule_enforcement`: Confirms explicit corporate action verification rules exist in `portfolio_sentinel.md` and `portfolio-sentinel`.
 5. `test_broker_auth_gate_enforcement`: Confirms mandatory broker auth gating in `rules/AGENTS.md` and `portfolio_manager.md`.
 6. `test_all_skills_and_agents_exist`: Verifies YAML frontmatter (`name`, `description`/`role`) for all 5 skills and 4 agents.
 7. `test_mock_portfolio_schema`: Validates `examples/mock_portfolio.json` structure, holdings array, and symbols.
 8. `test_obsidian_templates_exist`: Validates all 3 Obsidian markdown templates exist and are non-empty.
 9. `test_harness_configs_validity`: Validates JSON schema and server configurations in `claude_desktop_config.json` and `openclaw_config.json`.
-10. `test_hermes_plugin_conformance`: Validates Hermes Agent plugin manifest (`plugin.yaml`), entry point registration (`__init__.py`), guardrail interceptor hook, and MCP harness config (`hermes_config.yaml`).
+10. `test_multi_harness_root_files`: Validates root `.mcp.json` (Claude Code), root `CLAUDE.md`, and root `AGENTS.md` (OpenAI Codex / Cursor).
+11. `test_plugin_yaml_exists_and_conforms`: Validates Hermes Agent plugin manifest (`plugin.yaml`) metadata, skills, hooks, and environment dependencies.
+12. `test_init_py_registration`: Verifies `register(ctx)` registers skills, hooks, and slash commands.
+13. `test_guardrail_hook_blocks_forbidden_tools`: Verifies pre_tool_call hook blocks execution tools across snake_case, camelCase, kebab-case, GTT, and square-off variants while allowing read-only inspection tools.
+14. `test_slash_command_handlers`: Verifies slash commands handle arguments and `None` gracefully without crashing.
+15. `test_hermes_config_yaml_validity`: Validates all 10 MCP servers and auth headers in `harnesses/hermes_config.yaml`.
 
 ---
 

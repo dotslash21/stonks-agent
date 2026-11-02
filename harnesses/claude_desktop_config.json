@@ -13,6 +13,9 @@
     "indmoney": {
       "url": "https://mcp.indmoney.com/mcp",
       "transport": "sse",
+      "headers": {
+        "Authorization": "Bearer ${INDMONEY_API_TOKEN}"
+      },
       "description": "INDmoney broker MCP for Indian equities, US stocks, and CAMS/KFintech MFs"
     },
     "nse-cm-market": {
@@ -43,13 +46,17 @@
     "alpha-vantage": {
       "url": "https://mcp.alphavantage.co/mcp",
       "transport": "sse",
+      "headers": {
+        "Authorization": "Bearer ${ALPHA_VANTAGE_API_KEY}"
+      },
       "description": "Technical Specialist: 50+ pre-calculated server-side indicators (RSI, MACD, Bollinger Bands)"
     },
     "obsidian": {
       "command": "npx",
       "args": ["-y", "obsidian-mcp-server@3.7.2"],
       "env": {
-        "OBSIDIAN_API_KEY": "${OBSIDIAN_API_KEY}"
+        "OBSIDIAN_API_KEY": "${OBSIDIAN_API_KEY}",
+        "OBSIDIAN_VAULT_PATH": "${OBSIDIAN_VAULT_PATH}"
       },
       "description": "Persistent Investment Memory: Obsidian vault note and thesis management"
     }

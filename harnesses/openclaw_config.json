@@ -34,12 +34,7 @@
         "alpha-vantage",
         "obsidian"
       ],
-      "tools": [
-        "portfolio_sentinel_scan",
-        "corporate_action_check",
-        "adverse_event_diagnostics",
-        "obsidian_risk_journal"
-      ]
+      "tools": []
     },
     "fundamental_analyst": {
       "name": "fundamental_analyst",
@@ -60,12 +55,7 @@
         "yfinance-mcp",
         "obsidian"
       ],
-      "tools": [
-        "five_pillar_valuation",
-        "dcf_fair_value_model",
-        "xbrl_forensic_audit",
-        "obsidian_thesis_journal"
-      ]
+      "tools": []
     },
     "market_intel": {
       "name": "market_intel",
@@ -85,12 +75,7 @@
         "yfinance-mcp",
         "alpha-vantage"
       ],
-      "tools": [
-        "multi_tier_quote_router",
-        "bhavcopy_historical_eod",
-        "amfi_scheme_analytics",
-        "corporate_announcements"
-      ]
+      "tools": []
     },
     "portfolio_manager": {
       "name": "portfolio_manager",
@@ -110,12 +95,7 @@
         "indian-market-mcp",
         "obsidian"
       ],
-      "tools": [
-        "multi_broker_holdings_aggregator",
-        "broker_auth_gate",
-        "mf_overlap_detector",
-        "asset_allocation_analyzer"
-      ]
+      "tools": []
     }
   },
   "skills": {
@@ -154,6 +134,9 @@
     "indmoney": {
       "url": "https://mcp.indmoney.com/mcp",
       "transport": "sse",
+      "headers": {
+        "Authorization": "Bearer ${INDMONEY_API_TOKEN}"
+      },
       "description": "INDmoney broker MCP for Indian equities, US stocks, and CAMS/KFintech MFs"
     },
     "nse-cm-market": {
@@ -184,13 +167,17 @@
     "alpha-vantage": {
       "url": "https://mcp.alphavantage.co/mcp",
       "transport": "sse",
+      "headers": {
+        "Authorization": "Bearer ${ALPHA_VANTAGE_API_KEY}"
+      },
       "description": "Technical Specialist: 50+ pre-calculated server-side indicators (RSI, MACD, Bollinger Bands)"
     },
     "obsidian": {
       "command": "npx",
       "args": ["-y", "obsidian-mcp-server@3.7.2"],
       "env": {
-        "OBSIDIAN_API_KEY": "${OBSIDIAN_API_KEY}"
+        "OBSIDIAN_API_KEY": "${OBSIDIAN_API_KEY}",
+        "OBSIDIAN_VAULT_PATH": "${OBSIDIAN_VAULT_PATH}"
       },
       "description": "Persistent Investment Memory: Obsidian vault note and thesis management"
     }

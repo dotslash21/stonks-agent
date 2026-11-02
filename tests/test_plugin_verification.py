@@ -344,6 +344,28 @@ def test_harness_configs_validity():
         assert isinstance(data, dict), f"{config_name} must contain a JSON object"
 
 
+def test_multi_harness_root_files():
+    """Verify root .mcp.json, CLAUDE.md, and AGENTS.md exist and conform."""
+    mcp_json = REPO_ROOT / ".mcp.json"
+    assert mcp_json.exists(), ".mcp.json must exist at repository root for Claude Code"
+    with open(mcp_json, "r", encoding="utf-8") as f:
+        data = json.load(f)
+    assert "mcpServers" in data, ".mcp.json must declare mcpServers"
+    for srv in REQUIRED_MCP_SERVERS:
+        assert srv in data["mcpServers"], f".mcp.json missing server '{srv}'"
+
+    claude_md = REPO_ROOT / "CLAUDE.md"
+    assert claude_md.exists(), "CLAUDE.md must exist at repository root for Claude Code"
+    claude_content = claude_md.read_text(encoding="utf-8")
+    assert "100% Advisory-Only" in claude_content
+    assert ".mcp.json" in claude_content
+
+    agents_md = REPO_ROOT / "AGENTS.md"
+    assert agents_md.exists(), "AGENTS.md must exist at repository root for OpenAI Codex/Cursor"
+    agents_content = agents_md.read_text(encoding="utf-8")
+    assert "Universal Operating Rules" in agents_content
+
+
 class TestPluginVerification(unittest.TestCase):
     """Unittest wrapper exposing all verification functions for test runners."""
 
@@ -374,16 +396,8 @@ class TestPluginVerification(unittest.TestCase):
     def test_harness_configs_validity(self):
         test_harness_configs_validity()
 
-    def test_hermes_plugin_conformance(self):
-        """Verify Hermes Agent plugin files, entry point registration, and safety hook."""
-        from tests.test_hermes_plugin import TestHermesPlugin
-        hermes_test = TestHermesPlugin()
-        hermes_test.setUp()
-        hermes_test.test_plugin_yaml_exists_and_conforms()
-        hermes_test.test_init_py_registration()
-        hermes_test.test_guardrail_hook_blocks_forbidden_tools()
-        hermes_test.test_slash_command_handlers()
-        hermes_test.test_hermes_config_yaml_validity()
+    def test_multi_harness_root_files(self):
+        test_multi_harness_root_files()
 
 
 def main():

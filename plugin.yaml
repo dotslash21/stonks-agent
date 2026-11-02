@@ -3,7 +3,7 @@ version: "1.0.0"
 description: "Proactive AI Agent Plugin for Indian equities, ETFs, and direct mutual funds across Zerodha Kite, Groww, and INDmoney with official NSE data and Obsidian memory. Strictly 100% advisory-only."
 author: "Antigravity Ecosystem"
 license: "MIT"
-homepage: "https://github.com/arun/agentic-trading-setup"
+homepage: "https://github.com/dotslash21/stonks-agent"
 
 provides_hooks:
   - pre_tool_call

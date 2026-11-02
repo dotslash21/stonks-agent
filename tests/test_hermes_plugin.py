@@ -32,11 +32,21 @@ REQUIRED_MCP_SERVERS = [
 FORBIDDEN_TOOLS = [
     "place_order",
     "place_gtt_order",
+    "place_gtt",
     "cancel_order",
+    "cancel_gtt",
     "modify_order",
+    "modify_gtt",
     "execute_trade",
+    "execute_order",
     "buy_order",
     "sell_order",
+    "placeOrder",
+    "cancelOrder",
+    "place-order",
+    "cancel-order",
+    "square_off",
+    "exit_position",
 ]
 
 ALLOWED_TOOLS = [
@@ -49,6 +59,9 @@ ALLOWED_TOOLS = [
     "get_corporate_actions",
     "search_xbrl_filings",
     "get_scheme_details",
+    "obsidian_write_note",
+    "obsidian_get_note",
+    "obsidian_search_notes",
     "create_obsidian_note",
 ]
 
@@ -222,15 +235,29 @@ class TestHermesPlugin(unittest.TestCase):
         self.assertIn("pre-market risk audit", sentinel_out.lower())
         self.assertIn("tcs", sentinel_out.lower())
 
+        # Test with None arguments
+        sentinel_none = mock_ctx.commands["sentinel_audit"]["handler"](None)
+        self.assertIn("pre-market risk audit", sentinel_none.lower())
+
         valuation_out = mock_ctx.commands["valuation_audit"]["handler"]("HDFCBANK")
         self.assertIn("5-pillar fundamental valuation", valuation_out.lower())
         self.assertIn("hdfcbank", valuation_out.lower())
 
+        valuation_none = mock_ctx.commands["valuation_audit"]["handler"](None)
+        self.assertIn("5-pillar fundamental valuation", valuation_none.lower())
+
         mf_out = mock_ctx.commands["mf_audit"]["handler"]("Parag Parikh Flexi Cap")
         self.assertIn("mutual fund", mf_out.lower())
 
+        mf_none = mock_ctx.commands["mf_audit"]["handler"](None)
+        self.assertIn("mutual fund", mf_none.lower())
+
         status_out = mock_ctx.commands["market_status"]["handler"]("")
-        self.assertIn("100% advisory-only", status_out.lower())
+        self.assertIn("advisory guardrail", status_out.lower())
+        self.assertIn("broker & data source readiness", status_out.lower())
+
+        status_none = mock_ctx.commands["market_status"]["handler"](None)
+        self.assertIn("advisory guardrail", status_none.lower())
 
     def test_hermes_config_yaml_validity(self):
         """Verify harnesses/hermes_config.yaml defines all 10 required MCP servers."""
