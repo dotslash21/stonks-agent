@@ -1,6 +1,6 @@
 ---
-name: indian-portfolio-sentinel
-description: Monitors Indian equity and ETF holdings for negative market events, corporate filings, and trend breakdowns.
+name: portfolio-sentinel
+description: Monitors equity and ETF holdings for negative market events, corporate filings, and trend breakdowns.
 ---
 
 # Indian Portfolio Sentinel Skill

@@ -2,10 +2,11 @@
 
 [![Plugin Version](https://img.shields.io/badge/Plugin_Version-1.0.0-blue.svg)](plugin.json)
 [![Antigravity](https://img.shields.io/badge/Antigravity-2.0_Ready-green.svg)](https://antigravity.google)
+[![Hermes Agent](https://img.shields.io/badge/Hermes_Agent-Plugin_Ready-cyan.svg)](plugin.yaml)
 [![Claude Desktop](https://img.shields.io/badge/Claude_Desktop-Compatible-purple.svg)](harnesses/claude_desktop_config.json)
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-Compatible-orange.svg)](harnesses/openclaw_config.json)
 [![Advisory Only](https://img.shields.io/badge/Safety-100%25_Advisory_Only-red.svg)](rules/AGENTS.md)
-[![Verification Suite](https://img.shields.io/badge/Tests-9%2F9_Passing-brightgreen.svg)](tests/test_plugin_verification.py)
+[![Verification Suite](https://img.shields.io/badge/Tests-10%2F10_Passing-brightgreen.svg)](tests/test_plugin_verification.py)
 
 An institutional-grade, multi-agent intelligence plugin designed specifically for **Indian capital market investors (NSE/BSE Equities, Exchange-Traded Funds, and AMFI Direct Mutual Funds)**. Built for long-term compounders, high-conviction value investors, and positional risk managers (**strictly NO F&O derivatives, NO intraday day trading**), this plugin delivers 24/7 proactive monitoring for negative market events, corporate governance anomalies, SEBI LODR disclosures, and valuation shifts across **Zerodha Kite, Groww, and INDmoney**.
 
@@ -22,6 +23,7 @@ Synthesizes architecture patterns from:
 flowchart TD
     subgraph MultiHarnessClients ["1. Client Execution Harnesses"]
         AGY["Antigravity IDE & CLI<br/>(Native Plugin Manifest)"]
+        HERMES["Hermes Agent<br/>(plugin.yaml & __init__.py)"]
         CLAUDE["Claude Desktop<br/>(MCP Stdio / SSE Config)"]
         OPENCLAW["OpenClaw Runtime<br/>(Autonomous Agent Topology)"]
     end
@@ -53,6 +55,7 @@ flowchart TD
     end
 
     AGY --> AgentPersonas
+    HERMES --> AgentPersonas
     CLAUDE --> AgentPersonas
     OPENCLAW --> AgentPersonas
 
@@ -237,7 +240,72 @@ All agents operate under non-negotiable quantitative and behavioral guardrails c
 
 ---
 
-### Option 4: Configuring Obsidian Investment Memory
+### Option 4: In Hermes Agent
+
+This repository functions natively as a **Hermes Agent plugin** via its root [`plugin.yaml`](plugin.yaml) and [`__init__.py`](__init__.py).
+
+#### 1. Install or Link the Plugin
+- **Install directly via Hermes CLI**:
+  ```bash
+  hermes plugins install https://github.com/arun/agentic-trading-setup
+  ```
+- **Or install locally into your user plugin folder**:
+  ```bash
+  # Linux/macOS
+  ln -s $(pwd) ~/.hermes/plugins/stonks-agent
+
+  # Windows (PowerShell)
+  New-Item -ItemType SymbolicLink -Path "$HOME\.hermes\plugins\stonks-agent" -Target (Get-Location)
+  ```
+- **Project-Level Plugin**: If running directly within this directory, enable project plugins in your shell:
+  ```bash
+  export HERMES_ENABLE_PROJECT_PLUGINS=1
+  ```
+
+#### 2. Configure MCP Servers in Hermes
+Merge the MCP definitions from [`harnesses/hermes_config.yaml`](harnesses/hermes_config.yaml) into your `~/.hermes/config.yaml` under `mcp_servers:`:
+```yaml
+# ~/.hermes/config.yaml excerpt
+mcp_servers:
+  zerodha-kite:
+    command: "npx"
+    args: ["-y", "mcp-remote", "https://mcp.kite.trade/mcp"]
+  groww:
+    command: "npx"
+    args: ["-y", "mcp-remote@0.1.18", "https://mcp.groww.in/mcp", "52155"]
+  indmoney:
+    url: "https://mcp.indmoney.com/mcp"
+  nse-cm-market:
+    command: "npx"
+    args: ["-y", "mcp-remote", "https://mcp.nseindia.in/cmmkt/mcp"]
+  nse-bhavcopy:
+    command: "npx"
+    args: ["-y", "mcp-remote", "https://mcp.nseindia.in/bhavcopy/cm/mcp"]
+  indian-market-mcp:
+    command: "uvx"
+    args: ["indian-market-mcp"]
+  dalalos:
+    url: "https://mcp.dalalos.in/mcp"
+  yfinance-mcp:
+    command: "uvx"
+    args: ["yfmcp"]
+  alpha-vantage:
+    url: "https://mcp.alphavantage.co/mcp"
+  obsidian:
+    command: "npx"
+    args: ["-y", "obsidian-mcp-server@3.7.2"]
+```
+
+#### 3. Hermes Slash Commands & Guardrails
+- `/sentinel_audit [symbol]`: Triggers pre-market risk audit across broker holdings.
+- `/valuation_audit [symbol]`: Performs 5-pillar fundamental valuation and moat analysis.
+- `/mf_audit [scheme]`: Audits mutual funds and ETFs for TER creep, AUM bloat, and benchmark tracking error.
+- `/market_status`: Displays configured MCP data sources and confirms advisory-only mode.
+- **Safety Guardrail Hook**: `pre_tool_call` automatically intercepts and blocks any execution tool (`place_order`, `cancel_order`, etc.), guaranteeing 100% read-only operation.
+
+---
+
+### Option 5: Configuring Obsidian Investment Memory
 
 1. Open your **Obsidian** investment research vault.
 2. Install and enable the community plugin: **Local REST API** (`coddingtonbear/obsidian-local-rest-api`).
@@ -261,10 +329,10 @@ All agents operate under non-negotiable quantitative and behavioral guardrails c
 
 | Agent Manifest | Display Name | Core Purpose & Responsibilities | Bound Skills |
 | :--- | :--- | :--- | :--- |
-| [`agents/portfolio_sentinel.md`](agents/portfolio_sentinel.md) | **Portfolio Sentinel** | 24/7 early warning risk watchdog. Detects price-sensitive corporate filings, auditor resignations, forensic audit triggers, promoter share pledging, and technical 200 EMA / 52-week low breakdowns. | `indian-portfolio-sentinel`, `nse-corporate-filings`, `obsidian-portfolio-memory` |
-| [`agents/fundamental_analyst.md`](agents/fundamental_analyst.md) | **Fundamental Analyst** | Buffett/Duan 5-Pillar equity valuation analyst. Performs moat scoring, owner earnings / FCF computation, DCF intrinsic value modeling with Indian WACC (11.5–13.5%), and BSE-XBRL forensic audits. | `indian-fundamental-valuation`, `nse-corporate-filings`, `obsidian-portfolio-memory` |
+| [`agents/portfolio_sentinel.md`](agents/portfolio_sentinel.md) | **Portfolio Sentinel** | 24/7 early warning risk watchdog. Detects price-sensitive corporate filings, auditor resignations, forensic audit triggers, promoter share pledging, and technical 200 EMA / 52-week low breakdowns. | `portfolio-sentinel`, `nse-corporate-filings`, `obsidian-portfolio-memory` |
+| [`agents/fundamental_analyst.md`](agents/fundamental_analyst.md) | **Fundamental Analyst** | Buffett/Duan 5-Pillar equity valuation analyst. Performs moat scoring, owner earnings / FCF computation, DCF intrinsic value modeling with Indian WACC (11.5–13.5%), and BSE-XBRL forensic audits. | `fundamental-valuation`, `nse-corporate-filings`, `obsidian-portfolio-memory` |
 | [`agents/market_intel.md`](agents/market_intel.md) | **Market Intel Orchestrator** | Multi-tier market data router. Fetches official NSE live CM tape, historical Bhavcopy delivery volumes, 47k AMFI fund NAVs, and Alpha Vantage technical indicators with automatic fallback failover. | `nse-corporate-filings`, `mf-etf-health-check` |
-| [`agents/portfolio_manager.md`](agents/portfolio_manager.md) | **Multi-Broker Portfolio Manager** | Aggregates and reconciles holdings across Zerodha Kite, Groww, and INDmoney. Enforces broker authentication gating, detects inter-fund portfolio overlap, and generates rebalancing recommendations. | `mf-etf-health-check`, `indian-portfolio-sentinel`, `obsidian-portfolio-memory` |
+| [`agents/portfolio_manager.md`](agents/portfolio_manager.md) | **Multi-Broker Portfolio Manager** | Aggregates and reconciles holdings across Zerodha Kite, Groww, and INDmoney. Enforces broker authentication gating, detects inter-fund portfolio overlap, and generates rebalancing recommendations. | `mf-etf-health-check`, `portfolio-sentinel`, `obsidian-portfolio-memory` |
 
 ---
 
@@ -272,8 +340,8 @@ All agents operate under non-negotiable quantitative and behavioral guardrails c
 
 | Skill Package | Instructions File | Capabilities & Analytical Modules |
 | :--- | :--- | :--- |
-| **`indian-portfolio-sentinel`** | [`skills/indian-portfolio-sentinel/SKILL.md`](skills/indian-portfolio-sentinel/SKILL.md) | 5-tier adverse risk taxonomy (Governance, Solvency, Regulatory, Technical, Macro). Automatic corporate action adjustment logic for stock splits and bonus distributions. |
-| **`indian-fundamental-valuation`** | [`skills/indian-fundamental-valuation/SKILL.md`](skills/indian-fundamental-valuation/SKILL.md) | 5-Pillar valuation framework: Moat durability, Free Cash Flow yield, 2-stage DCF intrinsic valuation model, PEG ratio growth analysis, and Margin of Safety assessment. |
+| **`portfolio-sentinel`** | [`skills/portfolio-sentinel/SKILL.md`](skills/portfolio-sentinel/SKILL.md) | 5-tier adverse risk taxonomy (Governance, Solvency, Regulatory, Technical, Macro). Automatic corporate action adjustment logic for stock splits and bonus distributions. |
+| **`fundamental-valuation`** | [`skills/fundamental-valuation/SKILL.md`](skills/fundamental-valuation/SKILL.md) | 5-Pillar valuation framework: Moat durability, Free Cash Flow yield, 2-stage DCF intrinsic valuation model, PEG ratio growth analysis, and Margin of Safety assessment. |
 | **`nse-corporate-filings`** | [`skills/nse-corporate-filings/SKILL.md`](skills/nse-corporate-filings/SKILL.md) | SEBI LODR Regulation 30 event classifier. Auditor resignation triggers, forensic audits, promoter share pledging spikes, and SEBI PIT insider trading disclosures. |
 | **`mf-etf-health-check`** | [`skills/mf-etf-health-check/SKILL.md`](skills/mf-etf-health-check/SKILL.md) | AMFI scheme analytics for 47,000+ mutual funds. Fund manager transition radar, AUM bloat monitoring, expense ratio (TER) creep detection, and ETF tracking error audits. |
 | **`obsidian-portfolio-memory`** | [`skills/obsidian-portfolio-memory/SKILL.md`](skills/obsidian-portfolio-memory/SKILL.md) | Vault note creation and updates via `obsidian-mcp-server`. Populates structured YAML frontmatter for equity investment theses, fund reviews, and risk alert incident journals. |
@@ -367,16 +435,17 @@ Run the test suite:
 python tests/test_plugin_verification.py
 ```
 
-### Verification Suite Coverage (9/9 Tests Passing):
+### Verification Suite Coverage (10/10 Tests Passing):
 1. `test_plugin_manifest_validity`: Validates `plugin.json` schema, author, version, and prompt list.
 2. `test_mcp_config_validity`: Verifies presence and syntax for all 10 MCP servers in `mcp_config.json`.
 3. `test_no_execution_tools_prohibition`: Enforces 0 live order placement or cancellation tools (`place_order`, `place_gtt_order`, `cancel_order`) across all agent manifests, skills, and rule files.
-4. `test_corporate_action_rule_enforcement`: Confirms explicit corporate action verification rules exist in `portfolio_sentinel.md` and `indian-portfolio-sentinel`.
+4. `test_corporate_action_rule_enforcement`: Confirms explicit corporate action verification rules exist in `portfolio_sentinel.md` and `portfolio-sentinel`.
 5. `test_broker_auth_gate_enforcement`: Confirms mandatory broker auth gating in `rules/AGENTS.md` and `portfolio_manager.md`.
 6. `test_all_skills_and_agents_exist`: Verifies YAML frontmatter (`name`, `description`/`role`) for all 5 skills and 4 agents.
 7. `test_mock_portfolio_schema`: Validates `examples/mock_portfolio.json` structure, holdings array, and symbols.
 8. `test_obsidian_templates_exist`: Validates all 3 Obsidian markdown templates exist and are non-empty.
 9. `test_harness_configs_validity`: Validates JSON schema and server configurations in `claude_desktop_config.json` and `openclaw_config.json`.
+10. `test_hermes_plugin_conformance`: Validates Hermes Agent plugin manifest (`plugin.yaml`), entry point registration (`__init__.py`), guardrail interceptor hook, and MCP harness config (`hermes_config.yaml`).
 
 ---
 

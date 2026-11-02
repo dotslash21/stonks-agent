@@ -1,6 +1,6 @@
 ---
-name: indian-fundamental-valuation
-description: Performs 5-pillar fundamental valuation, moat durability analysis, and DCF intrinsic value calculation for Indian equities.
+name: fundamental-valuation
+description: Performs 5-pillar fundamental valuation, moat durability analysis, and DCF intrinsic value calculation for equities.
 ---
 
 # Indian Fundamental Valuation Skill

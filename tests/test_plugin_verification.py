@@ -53,8 +53,8 @@ PROHIBITION_KEYWORDS = [
 ]
 
 REQUIRED_SKILLS = [
-    "indian-portfolio-sentinel",
-    "indian-fundamental-valuation",
+    "portfolio-sentinel",
+    "fundamental-valuation",
     "nse-corporate-filings",
     "mf-etf-health-check",
     "obsidian-portfolio-memory",
@@ -201,7 +201,7 @@ def test_no_execution_tools_prohibition():
 def test_corporate_action_rule_enforcement():
     """Verify corporate action verification checks exist in sentinel agent and skill."""
     sentinel_agent = REPO_ROOT / "agents" / "portfolio_sentinel.md"
-    sentinel_skill = REPO_ROOT / "skills" / "indian-portfolio-sentinel" / "SKILL.md"
+    sentinel_skill = REPO_ROOT / "skills" / "portfolio-sentinel" / "SKILL.md"
 
     assert sentinel_agent.exists(), f"Sentinel agent missing: {sentinel_agent}"
     assert sentinel_skill.exists(), f"Sentinel skill missing: {sentinel_skill}"
@@ -373,6 +373,17 @@ class TestPluginVerification(unittest.TestCase):
 
     def test_harness_configs_validity(self):
         test_harness_configs_validity()
+
+    def test_hermes_plugin_conformance(self):
+        """Verify Hermes Agent plugin files, entry point registration, and safety hook."""
+        from tests.test_hermes_plugin import TestHermesPlugin
+        hermes_test = TestHermesPlugin()
+        hermes_test.setUp()
+        hermes_test.test_plugin_yaml_exists_and_conforms()
+        hermes_test.test_init_py_registration()
+        hermes_test.test_guardrail_hook_blocks_forbidden_tools()
+        hermes_test.test_slash_command_handlers()
+        hermes_test.test_hermes_config_yaml_validity()
 
 
 def main():

@@ -1,0 +1,84 @@
+# Hermes Agent MCP Configuration: Stonks Agent Plugin
+# Merge this mcp_servers block into your ~/.hermes/config.yaml
+
+mcp_servers:
+  zerodha-kite:
+    command: "npx"
+    args:
+      - "-y"
+      - "mcp-remote"
+      - "https://mcp.kite.trade/mcp"
+    description: "Zerodha Kite broker MCP for user holdings, positions, margins"
+    timeout: 120
+
+  groww:
+    command: "npx"
+    args:
+      - "-y"
+      - "mcp-remote@0.1.18"
+      - "https://mcp.groww.in/mcp"
+      - "52155"
+    description: "Groww broker MCP for direct equities and mutual fund holdings"
+    timeout: 120
+
+  indmoney:
+    url: "https://mcp.indmoney.com/mcp"
+    headers:
+      Authorization: "Bearer ${INDMONEY_API_TOKEN}"
+    description: "INDmoney broker MCP for Indian equities, US stocks, and CAMS/KFintech MFs"
+    timeout: 180
+
+  nse-cm-market:
+    command: "npx"
+    args:
+      - "-y"
+      - "mcp-remote"
+      - "https://mcp.nseindia.in/cmmkt/mcp"
+    description: "Primary: Official NSE Capital Market live snapshot, quotes, and market breadth"
+    timeout: 120
+
+  nse-bhavcopy:
+    command: "npx"
+    args:
+      - "-y"
+      - "mcp-remote"
+      - "https://mcp.nseindia.in/bhavcopy/cm/mcp"
+    description: "Primary: Official NSE Bhavcopy 5-year historical EOD prices and delivery volumes"
+    timeout: 120
+
+  indian-market-mcp:
+    command: "uvx"
+    args:
+      - "indian-market-mcp"
+    description: "Primary for MFs/ETFs & Secondary for Equities: 47k AMFI schemes, SIP XIRR, FII/DII flows"
+    timeout: 120
+
+  dalalos:
+    url: "https://mcp.dalalos.in/mcp"
+    description: "Forensic Specialist: BSE-XBRL filings, capex announcements, order books, BRSR disclosures"
+    timeout: 180
+
+  yfinance-mcp:
+    command: "uvx"
+    args:
+      - "yfmcp"
+    description: "Universal Fallback: Unauthenticated equity quotes (.NS/.BO), ETF fund look-through, WebP charts"
+    timeout: 120
+
+  alpha-vantage:
+    url: "https://mcp.alphavantage.co/mcp"
+    headers:
+      Authorization: "Bearer ${ALPHA_VANTAGE_API_KEY}"
+    description: "Technical Specialist: 50+ pre-calculated server-side indicators (RSI, MACD, Bollinger Bands)"
+    timeout: 180
+
+  obsidian:
+    command: "npx"
+    args:
+      - "-y"
+      - "obsidian-mcp-server@3.7.2"
+    env:
+      OBSIDIAN_API_KEY: "${OBSIDIAN_API_KEY}"
+      OBSIDIAN_VAULT_PATH: "${OBSIDIAN_VAULT_PATH}"
+    description: "Persistent Investment Memory: Obsidian vault note and thesis management"
+    timeout: 120

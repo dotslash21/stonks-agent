@@ -1,10 +1,10 @@
 {
-  "name": "indian-market-trading-plugin",
+  "name": "stonks-agent",
   "version": "1.0.0",
   "description": "Indian Market Trading & Investment Plugin for multi-broker monitoring, fundamental valuation, and risk sentinel",
   "plugin": {
-    "id": "indian-market-trading-plugin",
-    "name": "Indian Market Trading Plugin",
+    "id": "stonks-agent",
+    "name": "Stonks Agent Plugin",
     "entrypoint": "plugin.json",
     "rules": [
       "rules/AGENTS.md"
@@ -18,7 +18,7 @@
       "description": "Adverse event early-warning radar for Indian equities, ETFs, and direct mutual funds across Zerodha Kite, Groww, and INDmoney.",
       "manifest": "agents/portfolio_sentinel.md",
       "skills": [
-        "indian-portfolio-sentinel",
+        "portfolio-sentinel",
         "nse-corporate-filings",
         "obsidian-portfolio-memory"
       ],
@@ -48,7 +48,7 @@
       "description": "5-Pillar Buffett/Duan fundamental valuation, moat analyst, and XBRL forensic auditor.",
       "manifest": "agents/fundamental_analyst.md",
       "skills": [
-        "indian-fundamental-valuation",
+        "fundamental-valuation",
         "nse-corporate-filings",
         "obsidian-portfolio-memory"
       ],
@@ -100,7 +100,7 @@
       "manifest": "agents/portfolio_manager.md",
       "skills": [
         "mf-etf-health-check",
-        "indian-portfolio-sentinel",
+        "portfolio-sentinel",
         "obsidian-portfolio-memory"
       ],
       "mcpServers": [
@@ -119,12 +119,12 @@
     }
   },
   "skills": {
-    "indian-portfolio-sentinel": {
-      "path": "skills/indian-portfolio-sentinel/SKILL.md",
+    "portfolio-sentinel": {
+      "path": "skills/portfolio-sentinel/SKILL.md",
       "description": "Adverse risk diagnostics, corporate action adjustments & severity scoring for Indian equities and funds"
     },
-    "indian-fundamental-valuation": {
-      "path": "skills/indian-fundamental-valuation/SKILL.md",
+    "fundamental-valuation": {
+      "path": "skills/fundamental-valuation/SKILL.md",
       "description": "5-Pillar Buffett/Duan valuation, DCF model, Moat checklist & DalalOS XBRL audits"
     },
     "nse-corporate-filings": {

@@ -8,7 +8,7 @@
 
 **Tech Stack:** Model Context Protocol (MCP) servers (JSON-RPC 2.0 over stdio and Streamable HTTP), Antigravity Plugin manifest (`plugin.json`), Markdown agent personas and skills with YAML frontmatter, Obsidian Local REST API (`obsidian-mcp-server`), Python 3 verification test suite.
 
-**Spec:** [`docs/superpowers/specs/2026-11-01-indian-market-trading-plugin-design.md`](file:///c:/Users/aruna/development/agentic-trading-setup/docs/superpowers/specs/2026-11-01-indian-market-trading-plugin-design.md)
+**Spec:** [`docs/superpowers/specs/2026-11-01-stonks-agent-design.md`](file:///c:/Users/aruna/development/stonks-agent/docs/superpowers/specs/2026-11-01-stonks-agent-design.md)
 
 ---
 
