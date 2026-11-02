@@ -38,9 +38,14 @@ The **NSE Corporate Filings** skill monitors, parses, and ranks regulatory corpo
 - **Regulation 7(2) PIT Disclosures**: Market acquisitions, disposals, or pledge creations by Promoters, Directors, and Key Managerial Personnel (KMP) exceeding the regulatory reporting threshold (e.g., transaction value $> ₹10$ Lakhs).
 - **Regulation 31 SAST Disclosures**: Promoter share pledge creation, invocation of pledge by lenders, or pledge revocations.
 
-## Cross-Examination against DalalOS BSE-XBRL Filings
+### 7. US SEC EDGAR Regulatory Disclosures (INDmoney US Equities)
+- **Form 8-K**: Unscheduled material events, including executive changes (Item 5.02), asset impairments (Item 2.06), non-reliance on financial statements (Item 4.02), and bankruptcy/receivership (Item 1.03).
+- **Form 10-K / 10-Q**: Audited annual and quarterly financial statements, risk factors, and legal proceedings.
+- **Form 4 / Schedule 13D/G**: Officer, director, and 10% beneficial owner transaction reports for insider accumulation or liquidation.
+
+## Cross-Examination against DalalOS BSE-XBRL & SEC EDGAR
 To eliminate ambiguity from unstructured PDF press releases, the skill cross-examines unstructured filings against structured data sources:
-1. **XBRL Validation**: Reconcile company-issued press release statements with machine-readable XBRL balance sheet line-items in DalalOS (`dalalos`).
+1. **XBRL Validation**: Reconcile company-issued press release statements with machine-readable XBRL balance sheet line-items in DalalOS (`dalalos`) and SEC EDGAR (`sec-edgar`).
 2. **Exchange Feed Verification**: Cross-verify promoter pledge announcements against official exchange SAST registries to detect delays or discrepancies in reported pledge percentages.
 3. **Corporate Action Reconciliation**: Confirm announced dividend, split, or bonus ratios directly against clearing corporation circulars to guarantee verified ex-date pricing calculations.
 
@@ -51,8 +56,9 @@ To handle exchange downtime and API rate limits, regulatory queries follow an au
 |---|---|---|---|
 | **Live Regulation 30 Announcements** | NSE Live CM (`nse-cm-market:get_announcements`) | DalalOS (`dalalos:get_regulatory_filings`) | `indian-market-mcp:get_corporate_announcements` |
 | **BSE / NSE Structured XBRL** | DalalOS (`dalalos:get_financial_statements`) | `nse-bhavcopy` (Corporate Filings) | `indian-market-mcp:get_corporate_actions` |
+| **US SEC EDGAR 8-K / 10-K / 10-Q** | `sec-edgar` (Authoritative XBRL) | `yfinance-mcp` | SEC EDGAR portal |
 | **Board Meeting Schedules** | NSE Live CM (`nse-cm-market:get_board_meetings`) | DalalOS (`dalalos:get_board_meetings`) | `indian-market-mcp:get_board_meetings` |
-| **Insider Trading (PIT / SAST)** | NSE Live CM (`nse-cm-market:get_insider_trading`) | DalalOS (`dalalos:get_insider_trading`) | `indian-market-mcp:get_insider_trading` |
+| **Insider Trading (PIT / SAST / Form 4)** | NSE Live CM (`nse-cm-market:get_insider_trading`) | DalalOS (`dalalos:get_insider_trading`) | `sec-edgar` (for US Form 4) |
 | **Credit Rating Reports** | NSE Live CM (`nse-cm-market:get_announcements`) | DalalOS (`dalalos:get_regulatory_filings`) | `indian-market-mcp:get_news` |
 
 ## Step-by-Step Execution Workflow

@@ -1,6 +1,6 @@
 """Stonks Agent Plugin for Hermes Agent.
 
-Exposes 5 specialized investment intelligence skills, 10 read-only MCP data sources,
+Exposes 5 specialized investment intelligence skills, 12 read-only MCP data sources,
 and strict advisory-only lifecycle hooks ensuring zero live order execution.
 """
 
@@ -128,6 +128,8 @@ def handle_status_command(raw_args: Optional[str] = "") -> str:
     indmoney_status = "CONFIGURED (Token present)" if os.getenv("INDMONEY_API_TOKEN") else "UNCONFIGURED (Missing INDMONEY_API_TOKEN)"
     obsidian_status = "CONFIGURED (Key present)" if os.getenv("OBSIDIAN_API_KEY") else "UNCONFIGURED (Missing OBSIDIAN_API_KEY)"
     alpha_status = "CONFIGURED (Key present)" if os.getenv("ALPHA_VANTAGE_API_KEY") else "UNCONFIGURED (Missing ALPHA_VANTAGE_API_KEY)"
+    dalalos_status = "CONFIGURED (Key present)" if os.getenv("DALALOS_API_KEY") else "UNCONFIGURED (Missing DALALOS_API_KEY)"
+    sec_status = "CONFIGURED (User-Agent present)" if os.getenv("SEC_EDGAR_USER_AGENT") else "UNCONFIGURED (Missing SEC_EDGAR_USER_AGENT)"
 
     return (
         "=== Stonks Agent Plugin (Hermes Agent) ===\n"
@@ -138,7 +140,9 @@ def handle_status_command(raw_args: Optional[str] = "") -> str:
         f"- INDmoney: {indmoney_status}\n"
         f"- Obsidian Vault: {obsidian_status}\n"
         f"- Alpha Vantage: {alpha_status}\n"
-        "- Public Feeds (NSE CM Live, Bhavcopy, AMFI schemes, yFinance, DalalOS): Configured\n\n"
+        f"- DalalOS: {dalalos_status}\n"
+        f"- SEC EDGAR: {sec_status}\n"
+        "- Public Feeds (NSE CM Live, Bhavcopy, AMFI schemes, yFinance, OpenBB): Configured\n\n"
         "Skills Registered: 5 (portfolio-sentinel, fundamental-valuation, nse-corporate-filings, mf-etf-health-check, obsidian-portfolio-memory)\n"
         "Notice: Broker sessions (Zerodha Kite) require daily TOTP re-authentication (expires 06:00 AM IST). "
         "This status reflects local token presence; verify active session before executing pre-market audit."

@@ -55,6 +55,8 @@ mcp_servers:
 
   dalalos:
     url: "https://mcp.dalalos.in/mcp"
+    headers:
+      X-API-Key: "${DALALOS_API_KEY}"
     description: "Forensic Specialist: BSE-XBRL filings, capex announcements, order books, BRSR disclosures"
     timeout: 180
 
@@ -82,3 +84,19 @@ mcp_servers:
       OBSIDIAN_VAULT_PATH: "${OBSIDIAN_VAULT_PATH}"
     description: "Persistent Investment Memory: Obsidian vault note and thesis management"
     timeout: 120
+
+  sec-edgar:
+    command: "uvx"
+    args:
+      - "sec-edgar-mcp"
+    env:
+      SEC_EDGAR_USER_AGENT: "${SEC_EDGAR_USER_AGENT}"
+    description: "Regulatory Specialist: SEC EDGAR 10-K, 10-Q, 8-K filings and Form 13F/4 disclosures for US equities"
+    timeout: 180
+
+  openbb:
+    command: "uvx"
+    args:
+      - "openbb-mcp-server"
+    description: "Macro & Cross-Asset Specialist: OpenBB platform unified multi-vendor data, sovereign yields, macro series"
+    timeout: 180

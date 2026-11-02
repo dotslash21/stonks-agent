@@ -49,6 +49,8 @@ flowchart TD
         NSE_BHAV["Tier 1: NSE Bhavcopy (`bhavcopy/cm/mcp`)<br/>(5-Yr EOD & Delivery Math)"]
         IMM["Tier 2: indian-market-mcp<br/>(47k+ AMFI Schemes, FII/DII)"]
         DALAL["Forensic: DalalOS (`dalalos/mcp`)<br/>(BSE-XBRL Audits & Capex)"]
+        SEC_EDGAR["Regulatory: SEC EDGAR (`sec-edgar`)<br/>(Audited 10-K/Q, 8-K for US Equities)"]
+        OPENBB["Macro: OpenBB Platform (`openbb`)<br/>(Macro Data, Cross-Asset & Yields)"]
         ALPHA["Technical: Alpha Vantage<br/>(Pre-calculated RSI, MACD, BB)"]
         YFIN["Tier 3: yfinance-mcp (`yfmcp`)<br/>(Unauth Quotes & WebP Visuals)"]
     end
@@ -137,7 +139,9 @@ To guarantee maximum availability and eliminate rate-limit disruptions during ma
 | **Live Equity Tape & Depth** | `nse-cm-market` | `indian-market-mcp` | `yfinance-mcp` | Failover on HTTP 429, exchange timeout (>5s), or pre-open holiday session. |
 | **Historical EOD & Delivery** | `nse-bhavcopy` | `indian-market-mcp` | `yfinance-mcp` | 5-year official Bhavcopy delivery volume. Failover if range > 5 years. |
 | **Mutual Funds (47k AMFI)** | `indian-market-mcp` | Broker Ingestion NAV | `yfinance-mcp` | Direct scheme analytics. Log Render cold-start notice if initial latency > 10s. |
-| **SEBI Filings & Disclosures** | NSE Filings (Reg 30) | `dalalos` (BSE-XBRL) | Web Search / Portal | Material disclosures corroborated across both exchange sources. |
+| **Corporate Filings (Indian)** | NSE Filings (Reg 30) | `dalalos` (BSE-XBRL) | Web Search / Portal | Material disclosures corroborated across both exchange sources. |
+| **Corporate Filings (US Equities)** | `sec-edgar` (10-K, 10-Q, 8-K) | `yfinance-mcp` | Web Search / SEC EDGAR | Authoritative XBRL GAAP data for INDmoney US holdings. |
+| **Macro & Cross-Asset Intelligence** | `openbb` (Platform unified) | `alpha-vantage` | `yfinance-mcp` | Standardize macro indicators, yields, and currencies. |
 | **Technical Oscillators** | `nse-bhavcopy` | `alpha-vantage` | `yfinance-mcp` (WebP) | Always use server-side indicator computation to conserve token context. |
 
 ---
@@ -161,7 +165,11 @@ All agents operate under non-negotiable quantitative and behavioral guardrails c
    - The agent must **cross-reference corporate actions** (`get_corporate_actions` / DalalOS) for stock splits, bonus share distributions, rights issues, or demergers on or near the ex-date.
    - If mathematically explained by an ex-action ratio (e.g. 1:1 bonus or 1:10 split), the agent automatically adjusts the cost basis, documents the corporate event, and suppresses false-alarm distress alerts.
 
-4. **Token Optimization & Server-Side Indicator Computation**:
+4. **Survivorship Bias Guardrail**:
+   - Strictly prohibit retrospective backtesting or equity universe screening using modern index constituents without point-in-time constituent adjustment.
+   - Retrospective filtering without accounting for past delistings, demotions, or bankruptcies generates an artificial positive return drift.
+
+5. **Token Optimization & Server-Side Indicator Computation**:
    - Agents never fetch massive uncompressed raw tick-by-tick OHLCV JSON dumps.
    - Indicator values (200 EMA, 50 EMA, 14 RSI, MACD, Bollinger Bands) are fetched using pre-computed server-side endpoints (`alpha-vantage` or `nse-bhavcopy`).
    - Summary statistics and holdings matrices are condensed into compact Markdown tables.
@@ -194,13 +202,15 @@ This repository is pre-configured for **Claude Code** out-of-the-box:
    git clone https://github.com/dotslash21/stonks-agent.git
    cd stonks-agent
    ```
-2. **Auto-Discovery**: Claude Code automatically loads all 10 MCP servers via root [`.mcp.json`](.mcp.json) and reads project rules, advisory constraints, and test commands from root [`CLAUDE.md`](CLAUDE.md).
+2. **Auto-Discovery**: Claude Code automatically loads all 12 MCP servers via root [`.mcp.json`](.mcp.json) and reads project rules, advisory constraints, and test commands from root [`CLAUDE.md`](CLAUDE.md).
 3. Export your broker and API keys in your shell:
    ```bash
    export ZERODHA_ACCESS_TOKEN="your_daily_token"
    export GROWW_AUTH_TOKEN="your_groww_token"
    export INDMONEY_API_TOKEN="your_indmoney_token"
    export ALPHA_VANTAGE_API_KEY="your_alpha_key"
+   export DALALOS_API_KEY="your_dalalos_key"
+   export SEC_EDGAR_USER_AGENT="StonksAgent/1.0 (investor@stonks-agent.local)"
    export OBSIDIAN_API_KEY="your_obsidian_key"
    export OBSIDIAN_VAULT_PATH="/path/to/vault"
    ```

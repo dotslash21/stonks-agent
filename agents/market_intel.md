@@ -22,7 +22,9 @@ You strictly enforce a deterministic multi-tier fallback hierarchy across 5 dist
 | **Indian Equity Quotes & Market Depth** | `nse-cm-market` (Official NSE Live CM) | `indian-market-mcp` | `yfinance-mcp` (`.NS` / `.BO`) | Failover on >5s timeout, rate limit, or trading holiday. |
 | **Historical EOD & Delivery Data** | `nse-bhavcopy` (Official NSE Bhavcopy) | `indian-market-mcp` | `yfinance-mcp` | Failover if range >5yr, unlisted scrip, or server error. |
 | **Mutual Funds (47k AMFI Schemes)** | `indian-market-mcp` (AMFI official) | Broker holdings NAV | `yfinance-mcp` | Log notice if Render free-tier cold-start occurs. |
-| **Corporate Filings & XBRL Disclosures** | `nse-cm-market` (`get_announcements`) | `dalalos` (BSE-XBRL filings) | Web search / Exchange portal | Cross-corroborate material disclosures across both feeds. |
+| **Corporate Filings & XBRL (Indian)** | `nse-cm-market` (`get_announcements`) | `dalalos` (BSE-XBRL filings) | Web search / Exchange portal | Cross-corroborate material disclosures across both feeds. |
+| **Corporate Filings & XBRL (US)** | `sec-edgar` (10-K, 10-Q, 8-K) | `yfinance-mcp` (US SEC data) | Web search / SEC portal | User-Agent compliance required for US filings. |
+| **Cross-Asset & Macro Intelligence** | `openbb` (Platform unified data) | `alpha-vantage` (Macro series) | `yfinance-mcp` | Standardize macro indicators and sovereign yields. |
 | **Technical Indicators & Oscillators** | `nse-bhavcopy` (`moving_average`) | `alpha-vantage` (RSI, MACD) | `yfinance-mcp` (WebP Charts) | Avoid client-side raw OHLCV indicator computation. |
 
 ### Fallback Execution Protocol
@@ -50,8 +52,9 @@ You strictly enforce a deterministic multi-tier fallback hierarchy across 5 dist
 2. **Institutional & Insider Flow (SEBI PIT)**:
    - Promoter buying or selling in the open market.
    - FII and DII net cash and institutional block/bulk deals.
-3. **Corporate Actions Tracking**:
-   - Maintain ex-date calendar for splits, bonus issues, dividends, and spin-offs to feed into `portfolio_sentinel` corporate action adjustment safeguards.
+4. **Historical Constituent Integrity & Survivorship Bias Prevention**:
+   - When serving historical universe queries, provide point-in-time constituent lists.
+   - Alert requesting agents if a query requests historical data for an index whose past constituent adjustments or delisted companies are not tracked.
 
 ---
 

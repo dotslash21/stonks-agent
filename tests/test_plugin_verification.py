@@ -28,6 +28,8 @@ REQUIRED_MCP_SERVERS = [
     "yfinance-mcp",
     "alpha-vantage",
     "obsidian",
+    "sec-edgar",
+    "openbb",
 ]
 
 FORBIDDEN_EXECUTION_TOOLS = [
@@ -137,7 +139,7 @@ def test_plugin_manifest_validity():
 
 
 def test_mcp_config_validity():
-    """Verify mcp_config.json exists, has valid JSON, and contains all 10 MCP servers."""
+    """Verify mcp_config.json exists, has valid JSON, and contains all 12 MCP servers."""
     mcp_path = REPO_ROOT / "mcp_config.json"
     assert mcp_path.exists(), f"mcp_config.json does not exist at {mcp_path}"
 
@@ -329,7 +331,7 @@ def test_obsidian_templates_exist():
 
 
 def test_harness_configs_validity():
-    """Verify claude_desktop_config.json and openclaw_config.json exist and are valid JSON."""
+    """Verify claude_desktop_config.json and openclaw_config.json exist, are valid JSON, and declare all required MCP servers."""
     harness_dir = REPO_ROOT / "harnesses"
     assert harness_dir.exists(), f"Harness directory missing: {harness_dir}"
 
@@ -342,6 +344,19 @@ def test_harness_configs_validity():
             except json.JSONDecodeError as err:
                 raise AssertionError(f"{config_name} is invalid JSON: {err}") from err
         assert isinstance(data, dict), f"{config_name} must contain a JSON object"
+
+        servers = data.get("mcpServers", {})
+        for srv in REQUIRED_MCP_SERVERS:
+            assert srv in servers, f"{config_name} missing required MCP server '{srv}'"
+
+    # Verify OpenClaw agent tool bindings include sec-edgar for market_intel
+    openclaw_path = harness_dir / "openclaw_config.json"
+    with open(openclaw_path, "r", encoding="utf-8") as f:
+        openclaw_data = json.load(f)
+    market_intel_servers = openclaw_data["agents"]["market_intel"]["mcpServers"]
+    assert "sec-edgar" in market_intel_servers, (
+        "openclaw_config.json market_intel agent must bind 'sec-edgar' for US corporate filings"
+    )
 
 
 def test_multi_harness_root_files():
@@ -364,6 +379,64 @@ def test_multi_harness_root_files():
     assert agents_md.exists(), "AGENTS.md must exist at repository root for OpenAI Codex/Cursor"
     agents_content = agents_md.read_text(encoding="utf-8")
     assert "Universal Operating Rules" in agents_content
+
+
+def test_survivorship_bias_guardrail_enforcement():
+    """Verify survivorship bias guardrail exists across rules and fundamental analyst agent."""
+    rules_file = REPO_ROOT / "rules" / "AGENTS.md"
+    root_rules = REPO_ROOT / "AGENTS.md"
+    analyst_agent = REPO_ROOT / "agents" / "fundamental_analyst.md"
+
+    for target in [rules_file, root_rules, analyst_agent]:
+        assert target.exists(), f"Target file missing: {target}"
+        content = target.read_text(encoding="utf-8").lower()
+        assert "survivorship bias" in content, (
+            f"{target.relative_to(REPO_ROOT)} must explicitly contain 'survivorship bias' guardrails."
+        )
+
+
+def test_mock_portfolio_asset_diversity():
+    """Verify mock portfolio contains diversified assets: Equities, ETFs, Mutual Funds, and US Equities."""
+    mock_path = REPO_ROOT / "examples" / "mock_portfolio.json"
+    with open(mock_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    holdings = data["holdings"]
+    asset_types = {h.get("asset_type") for h in holdings}
+    symbols = {h.get("symbol") for h in holdings}
+
+    assert "EQUITY" in asset_types, "Mock portfolio must contain EQUITY assets"
+    assert "ETF" in asset_types, "Mock portfolio must contain ETF assets"
+    assert "MUTUAL_FUND" in asset_types, "Mock portfolio must contain MUTUAL_FUND assets"
+    assert "US_EQUITY" in asset_types, "Mock portfolio must contain US_EQUITY assets"
+
+    assert "KAYNES" in symbols, "Mock portfolio must contain KAYNES"
+    assert "NIFTYBEES" in symbols, "Mock portfolio must contain NIFTYBEES"
+    assert "PARAG_PARIKH_FLEXI_CAP" in symbols, "Mock portfolio must contain PARAG_PARIKH_FLEXI_CAP"
+    assert "AAPL" in symbols, "Mock portfolio must contain AAPL"
+
+
+def test_auth_headers_integrity():
+    """Verify proper auth header configurations for DalalOS and Alpha Vantage."""
+    for config_rel in ["mcp_config.json", ".mcp.json", "harnesses/claude_desktop_config.json"]:
+        config_path = REPO_ROOT / config_rel
+        assert config_path.exists(), f"{config_rel} missing"
+        with open(config_path, "r", encoding="utf-8") as f:
+            cfg = json.load(f)
+
+        servers = cfg.get("mcpServers", cfg)
+        assert "alpha-vantage" in servers, f"{config_rel} missing alpha-vantage"
+        assert "dalalos" in servers, f"{config_rel} missing dalalos"
+
+        av_headers = servers["alpha-vantage"].get("headers", {})
+        assert "Authorization" in av_headers and "ALPHA_VANTAGE_API_KEY" in av_headers["Authorization"], (
+            f"{config_rel} alpha-vantage missing Authorization Bearer header"
+        )
+
+        dalalos_headers = servers["dalalos"].get("headers", {})
+        assert "X-API-Key" in dalalos_headers and "DALALOS_API_KEY" in dalalos_headers["X-API-Key"], (
+            f"{config_rel} dalalos missing X-API-Key header"
+        )
 
 
 class TestPluginVerification(unittest.TestCase):
@@ -398,6 +471,15 @@ class TestPluginVerification(unittest.TestCase):
 
     def test_multi_harness_root_files(self):
         test_multi_harness_root_files()
+
+    def test_survivorship_bias_guardrail_enforcement(self):
+        test_survivorship_bias_guardrail_enforcement()
+
+    def test_mock_portfolio_asset_diversity(self):
+        test_mock_portfolio_asset_diversity()
+
+    def test_auth_headers_integrity(self):
+        test_auth_headers_integrity()
 
 
 def main():

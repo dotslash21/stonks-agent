@@ -15,7 +15,8 @@ To ensure reliable operation during market hours and off-market scans, data quer
 |---|---|---|---|
 | **Live / EOD Quotes & OHLCV** | NSE Live CM (`nse-cm-market`) / NSE Bhavcopy (`nse-bhavcopy`) | `indian-market-mcp:get_quote` | `yfinance-mcp:yfinance_get_historical_data` (`.NS` / `.BO`) |
 | **Technical Indicators (EMA, RSI)** | `indian-market-mcp:get_technical_indicators` | Calculated from `nse-bhavcopy` history | Calculated from `yfinance-mcp:yfinance_get_historical_data` |
-| **Corporate Disclosures (LODR Reg 30)** | NSE Live CM (`nse-cm-market:get_announcements`) | `dalalos:get_regulatory_filings` | `indian-market-mcp:get_corporate_announcements` |
+| **Corporate Disclosures (Indian LODR Reg 30)** | NSE Live CM (`nse-cm-market:get_announcements`) | `dalalos:get_regulatory_filings` | `indian-market-mcp:get_corporate_announcements` |
+| **Corporate Disclosures (US 8-K / 10-K / 10-Q)** | `sec-edgar` (Authoritative XBRL filings) | `yfinance-mcp:yfinance_get_news` | SEC EDGAR portal |
 | **Corporate Actions (Split, Bonus, Div)** | `indian-market-mcp:get_corporate_actions` | `dalalos:get_corporate_actions` | `yfinance-mcp:yfinance_get_historical_data` (actions lookback) |
 | **Financial Media & News Flow** | `indian-market-mcp:get_news` | `yfinance-mcp:yfinance_get_news` | — |
 

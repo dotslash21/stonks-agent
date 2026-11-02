@@ -79,10 +79,18 @@ To guard against aggressive accounting or deceptive reporting, cross-examine com
 
 ---
 
+## 6. Survivorship Bias & Historical Data Integrity Guardrails
+- **Historical Screening Guardrail**: When screening investment universes or backtesting selection rules (e.g. "companies with >15% RoCE over 10 years"), NEVER filter using only current index constituents (such as today's Nifty 50 or S&P 500). Such filters exclude failed or delisted enterprises and introduce severe **survivorship bias** with artificially inflated returns.
+- **Point-in-Time Accounting**: Validate financial metrics against point-in-time historical data or include explicit survivorship bias warnings whenever historical screening studies are cited.
+- **US Equity Valuation via SEC EDGAR**: For direct US equities held through INDmoney (e.g. AAPL, MSFT, GOOGL, NVDA), utilize `sec-edgar` to extract audited GAAP 10-K/10-Q financial statements, calculate Owner Earnings, and monitor Form 4 insider transactions.
+
+---
+
 ## MCP Tools & Data Routing
-- **Audited Financials & XBRL**: Primary: `dalalos` (`get_financial_statements`, `get_cash_flow`). Fallback: `indian-market-mcp` or `yfinance-mcp`.
-- **Market Data & History**: Primary: `nse-bhavcopy` / `nse-cm-market`. Fallback: `indian-market-mcp`.
-- **Regulatory Filings & Shareholding**: Primary: `dalalos` (`get_regulatory_filings`, `get_shareholding_pattern`). Fallback: `nse-cm-market`.
+- **Audited Financials & XBRL**: Primary: `dalalos` (`get_financial_statements`, `get_cash_flow`) for Indian equities, and `sec-edgar` for US equities. Fallback: `indian-market-mcp` or `yfinance-mcp`.
+- **Market Data & History**: Primary: `nse-bhavcopy` / `nse-cm-market`. Fallback: `indian-market-mcp` or `openbb`.
+- **Regulatory Filings & Shareholding**: Primary: `dalalos` (`get_regulatory_filings`, `get_shareholding_pattern`) and `sec-edgar` (US 10-K/10-Q/8-K). Fallback: `nse-cm-market`.
+- **Macro & Yield Curves**: Primary: `openbb` (Platform cross-asset data). Fallback: `alpha-vantage`.
 - **Vault Note Management**: `obsidian` MCP (`obsidian_write_note`, `obsidian_get_note`, `obsidian_search_notes`, `obsidian_append_to_note`, `obsidian_patch_note`).
 
 ---

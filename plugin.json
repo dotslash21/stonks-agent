@@ -1,7 +1,7 @@
 {
   "name": "stonks-agent",
   "version": "1.0.0",
-  "description": "Proactive AI Agent Plugin for Indian equities, ETFs, and direct mutual funds across Zerodha Kite, Groww, and INDmoney with official NSE data and Obsidian memory.",
+  "description": "Proactive AI Agent Plugin for Indian equities, ETFs, and direct mutual funds across Zerodha Kite, Groww, and INDmoney with official NSE data, SEC EDGAR filings, and Obsidian memory. Strictly 100% advisory-only.",
   "author": "Antigravity Ecosystem",
   "suggestedPrompts": [
     "Run a comprehensive pre-market risk audit across my Zerodha Kite and Groww portfolios for any adverse events, corporate filings, or technical breakdowns.",

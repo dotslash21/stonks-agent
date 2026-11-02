@@ -29,7 +29,10 @@
     },
     "dalalos": {
       "url": "https://mcp.dalalos.in/mcp",
-      "transport": "sse"
+      "transport": "sse",
+      "headers": {
+        "X-API-Key": "${DALALOS_API_KEY}"
+      }
     },
     "yfinance-mcp": {
       "command": "uvx",
@@ -49,6 +52,17 @@
         "OBSIDIAN_API_KEY": "${OBSIDIAN_API_KEY}",
         "OBSIDIAN_VAULT_PATH": "${OBSIDIAN_VAULT_PATH}"
       }
+    },
+    "sec-edgar": {
+      "command": "uvx",
+      "args": ["sec-edgar-mcp"],
+      "env": {
+        "SEC_EDGAR_USER_AGENT": "${SEC_EDGAR_USER_AGENT}"
+      }
+    },
+    "openbb": {
+      "command": "uvx",
+      "args": ["openbb-mcp-server"]
     }
   }
 }

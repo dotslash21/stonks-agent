@@ -1,8 +1,8 @@
 # Universal Operating Rules & Safety Guardrails
 
-**Target Audience:** All AI Agents (`portfolio_sentinel`, `fundamental_analyst`, `market_intel`, `portfolio_manager`) operating within Antigravity, Claude Desktop / Claude Code, OpenClaw, Cursor, or any supported harness.
+**Target Audience:** All AI Agents (`portfolio_sentinel`, `fundamental_analyst`, `market_intel`, `portfolio_manager`) operating within Antigravity, Claude Code / Claude Desktop, OpenAI Codex, OpenClaw, Cursor, or any supported harness.
 
-These universal operating rules establish mandatory safety boundaries, ethical standards, quantitative safeguards, and operational constraints for the Indian Market Trading & Portfolio Sentinel Plugin. Compliance is non-negotiable across all execution environments.
+These universal operating rules establish mandatory safety boundaries, ethical standards, quantitative safeguards, and operational constraints for the Stonks Agent Plugin. Compliance is non-negotiable across all execution environments.
 
 ---
 
@@ -75,7 +75,17 @@ When fetching market data, corporate filings, or technical analytics, agents mus
 | **Indian Equity Quotes & Tape** | `nse-cm-market` (Official NSE Live) | `indian-market-mcp` | `yfinance-mcp` (`.NS`/`.BO`) | Failover on >5s timeout or trading holiday. |
 | **Historical EOD & Delivery** | `nse-bhavcopy` (Official NSE EOD) | `indian-market-mcp` | `yfinance-mcp` | Failover if query range >5yr or server error. |
 | **Mutual Funds (47k AMFI)** | `indian-market-mcp` | Broker holdings NAV | `yfinance-mcp` | Log notice if Render cold-start occurs. |
-| **Corporate Filings & XBRL** | NSE Filings (SEBI LODR Reg 30) | `dalalos` (BSE-XBRL) | Web search / Exchange portal | Corroborate material disclosures across both. |
+| **Corporate Filings & XBRL (Indian)** | NSE Filings (SEBI LODR Reg 30) | `dalalos` (BSE-XBRL) | Web search / Exchange portal | Corroborate material disclosures across both. |
+| **Corporate Filings & XBRL (US)** | `sec-edgar` (Authoritative 10-K/Q) | `yfinance-mcp` (US SEC data) | Web search / SEC EDGAR portal | Enforce SEC User-Agent compliance header. |
+| **Cross-Asset & Macro Intelligence** | `openbb` (Multi-Vendor macro/yields)| `alpha-vantage` (Macro series) | `yfinance-mcp` | Standardize currency/yield indicators. |
 | **Technical Oscillators** | `nse-bhavcopy` (`moving_average`) | `alpha-vantage` (RSI, MACD) | `yfinance-mcp` (WebP Charts) | Avoid client-side raw JSON indicator computation. |
 
 When activating a secondary or fallback server, agents must log a concise diagnostic notice while completing the analytical task without interrupting user interaction.
+
+---
+
+## 8. Survivorship Bias & Historical Data Integrity Guardrails
+
+- **Survivorship Bias Prohibition in Screening**: Agents performing stock screening, universe filtration, or backtesting must never retrospectively apply present-day index constituent lists (such as today's Nifty 50, Nifty 500, or S&P 500) to historical periods without explicit point-in-time constituent adjustment. Doing so systematically ignores delisted, bankrupt, or demoted companies and introduces severe survivorship bias with artificial positive return drift.
+- **Point-in-Time Constituent Accounting**: When conducting historical performance studies, agents must explicitly check whether index changes, additions, and deletions occurred during the evaluation horizon, or attach an explicit survivorship bias warning to the findings.
+- **Delisting & Demerger Tracking**: For multi-year holding assessments, verify corporate reorganizations, demergers, and delisting histories using exchange registries (`dalalos`, `nse-bhavcopy`, or `sec-edgar` for US equities) to ensure historical data integrity.

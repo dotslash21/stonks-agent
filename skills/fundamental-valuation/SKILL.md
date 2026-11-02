@@ -83,12 +83,19 @@ For structural accounting depth, the skill integrates with `dalalos` to parse of
 3. **Order Book Audit**: Verify order books, book-to-bill ratios, and execution visibility for EPC, infrastructure, and defense companies from official investor disclosures.
 4. **Related Party Transactions (RPTs)**: Machine-read RPT schedules to detect promoter self-dealing, unhedged inter-corporate deposits (ICDs), or royalty fee increases.
 
+## Survivorship Bias & Historical Data Integrity Guardrail
+- **Screening & Backtesting Safeguard**: When filtering historical equities for multi-year compounders or backtesting valuation screens, agents must NEVER filter solely against current index constituent rosters (e.g. today's Nifty 50 or S&P 500). Applying present-day survivor lists backwards ignores companies that failed, entered bankruptcy, or were delisted, introducing severe **survivorship bias** with artificially inflated returns.
+- **Point-in-Time Accounting**: All historical valuation comparisons must utilize point-in-time constituent lists or document explicit survivorship caveats.
+- **US Equities Auditing (via SEC EDGAR)**: For US equities held via INDmoney, parse audited GAAP 10-K and 10-Q XBRL filings through `sec-edgar`, compute Buffett Owner Earnings ($FCF = Net\ Income + D\&A - Maintenance\ Capex$), and cross-reference Form 4 insider holdings.
+
 ## Multi-Tier Data Routing Table
 Data ingestion handles market volatility and connectivity fallbacks reliably:
 
 | Fundamental Requirement | Primary Feed | Fallback Tier 1 | Fallback Tier 2 |
 |---|---|---|---|
-| **Audited Financials & XBRL** | DalalOS (`dalalos:get_financial_statements`) | `indian-market-mcp:get_financial_ratios` | `yfinance-mcp:yfinance_get_financials` |
+| **Audited Financials & XBRL (Indian)** | DalalOS (`dalalos:get_financial_statements`) | `indian-market-mcp:get_financial_ratios` | `yfinance-mcp:yfinance_get_financials` |
+| **Audited Financials & XBRL (US)** | `sec-edgar` (10-K, 10-Q XBRL filings) | `yfinance-mcp:yfinance_get_financials` | SEC EDGAR portal |
+| **Macro Yields & Cross-Asset Data** | `openbb` (Platform cross-asset data) | `alpha-vantage` (Treasury / G-Sec yields) | `yfinance-mcp` |
 | **Current Price & Market Cap** | NSE Bhavcopy (`nse-bhavcopy`) / NSE CM (`nse-cm-market`) | `indian-market-mcp:get_quote` | `yfinance-mcp:yfinance_get_quote` (`.NS` / `.BO`) |
 | **Historical Price & Median P/E**| `indian-market-mcp:get_historical_data` | Calculated from `nse-bhavcopy` | `yfinance-mcp:yfinance_get_historical_data` |
 | **Cash Flow Statements** | DalalOS (`dalalos:get_cash_flow`) | `indian-market-mcp:get_cash_flow` | `yfinance-mcp:yfinance_get_cash_flow` |
